@@ -23,8 +23,9 @@ $(document).ready(function() {
                     }
                 });// end check on submit
             });
+            onlyLeavesSelectable(TagFormVar.selectSonsOnly);
         });
-        onlyLeavesSelectable();
+        
     }
 });
 
@@ -281,11 +282,13 @@ function populateDropdownWithSelectedTags(tagTreeId, dropdownId){
     }
 }
 
-function onlyLeavesSelectable(){
+function onlyLeavesSelectable(selectSonsOnly){
     // only leaf nodes are selectable
     var parents = $('li.kv-parent');
     parents.each(function(index, node){
-        $('.kv-node-checkbox:first', this).remove();
+        if(selectSonsOnly == true){
+            $('.kv-node-checkbox:first', this).remove();
+        }
         //The folder node - remove checkbox
         var detail =  $('.kv-node-detail:first',this);
         detail.addClass('kv-node-detail-parent').removeClass('kv-node-detail');

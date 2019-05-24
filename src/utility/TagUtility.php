@@ -13,7 +13,7 @@ namespace lispa\amos\tag\utility;
 
 use lispa\amos\tag\models\EntitysTagsMm;
 use lispa\amos\tag\models\Tag;
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\db\ActiveQuery;
 use yii\db\Query;
 
@@ -21,7 +21,7 @@ use yii\db\Query;
  * Class TagUtility
  * @package lispa\amos\tag\utility
  */
-class TagUtility extends Object
+class TagUtility extends BaseObject
 {
     /**
      * This method returns all tags selected for a model.
