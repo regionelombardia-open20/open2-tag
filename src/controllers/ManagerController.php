@@ -1,15 +1,15 @@
 <?php
 
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\tag
+ * @package    open20\amos\tag
  * @category   CategoryName
  */
 
-namespace lispa\amos\tag\controllers;
+namespace open20\amos\tag\controllers;
 
 use yii\base\Controller;
 use yii\filters\AccessControl;
@@ -81,7 +81,7 @@ class ManagerController extends Controller
         }
         $module = \Yii::$app->getModule('layout');
         if(empty($module)){
-            $this->layout =  '@vendor/lispa/amos-core/views/layouts/' . (!empty($layout) ? $layout : $this->layout);
+            $this->layout =  '@vendor/open20/amos-core/views/layouts/' . (!empty($layout) ? $layout : $this->layout);
             return true;
         }
         $this->layout = (!empty($layout)) ? $layout : $this->layout;

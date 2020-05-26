@@ -1,17 +1,17 @@
 <?php
 
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\tag
+ * @package    open20\amos\tag
  * @category   CategoryName
  */
 
-namespace lispa\amos\tag\controllers;
+namespace open20\amos\tag\controllers;
 
-use lispa\amos\dashboard\controllers\base\DashboardController;
+use open20\amos\dashboard\controllers\base\DashboardController;
 use yii\helpers\Url;
 
 class DefaultController extends DashboardController
@@ -56,7 +56,7 @@ class DefaultController extends DashboardController
         }
         $module = \Yii::$app->getModule('layout');
         if(empty($module)){
-            $this->layout =  '@vendor/lispa/amos-core/views/layouts/' . (!empty($layout) ? $layout : $this->layout);
+            $this->layout =  '@vendor/open20/amos-core/views/layouts/' . (!empty($layout) ? $layout : $this->layout);
             return true;
         }
         $this->layout = (!empty($layout)) ? $layout : $this->layout;

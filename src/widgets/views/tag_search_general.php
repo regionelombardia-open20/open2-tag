@@ -1,20 +1,20 @@
 <?php
 
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\tag\widgets\views
+ * @package    open20\amos\tag\widgets\views
  * @category   CategoryName
  */
 
-use lispa\amos\tag\AmosTag;
+use open20\amos\tag\AmosTag;
 
 /**
  *
- * @var \lispa\amos\core\record\AmosRecordAudit $model
- * @var \lispa\amos\core\forms\ActiveForm $form
+ * @var \open20\amos\core\record\AmosRecordAudit $model
+ * @var \open20\amos\core\forms\ActiveForm $form
  * @var string $name
  * @var array $trees
  * @var array $limit_trees
@@ -24,7 +24,7 @@ use lispa\amos\tag\AmosTag;
  * @var string $id
  */
 
-\lispa\amos\tag\assets\ModuleTagFormAsset::register($this);
+\open20\amos\tag\assets\ModuleTagFormAsset::register($this);
 
 $errorBlockMessage = AmosTag::t('amostag', 'Selezionare almeno 1 tag.');
 $errorTooltipTitle = AmosTag::t('amostag', 'E\' necessario scegliere almeno 1 tag');
@@ -60,11 +60,11 @@ JS
             <?php if (!$hideHeader): ?>
                 <?php
                 if (!$is_search) {
-                    echo \lispa\amos\core\helpers\Html::tag('h3', AmosTag::tHtml('amostag', '#tags_title_tree'), [
+                    echo \open20\amos\core\helpers\Html::tag('h3', AmosTag::tHtml('amostag', '#tags_title_tree'), [
                         'class' => 'tags-title'
                     ]);
                 } else {
-                    echo \lispa\amos\core\helpers\Html::tag('label', AmosTag::tHtml('amostag', '#tags_label_tree'));
+                    echo \open20\amos\core\helpers\Html::tag('label', AmosTag::tHtml('amostag', '#tags_label_tree'));
                 }
                 ?>
             <?php endif; ?>
@@ -108,7 +108,7 @@ JS
                     }
 
                     echo $form->field($model, $name)->widget(\kartik\tree\TreeViewInput::className(), [
-                        'query' => lispa\amos\tag\models\Tag::find()
+                        'query' => open20\amos\tag\models\Tag::find()
                             ->andWhere(['root' => $id_tree])
                             ->addOrderBy('root, lft'),
                         'headingOptions' => ['label' => $label_tree],
@@ -134,10 +134,10 @@ JS
 <?php
 $options = [
     'data_trees' => $data_trees,
-    'error_limit_tags' => AmosTag::tHtml('amostag', 'Hai superato le scelte disponibili per questi descrittori.'),
-    'tags_unlimited' => AmosTag::tHtml('amostag', 'illimitate'),
-    'no_tags_selected' => AmosTag::tHtml('amostag', 'Nessun tag selezionato'),
-    'icon_remove_tag' => \lispa\amos\core\icons\AmosIcons::show('close', [], 'am'),
+    'error_limit_tags' => AmosTag::t('amostag', 'Hai superato le scelte disponibili per questi descrittori.'),
+    'tags_unlimited' => AmosTag::t('amostag', 'illimitate'),
+    'no_tags_selected' => AmosTag::t('amostag', 'Nessun tag selezionato'),
+    'icon_remove_tag' => \open20\amos\core\icons\AmosIcons::show('close', [], 'am'),
 ];
 $this->registerJs(
     "if (typeof TagFormVars === 'undefined' || TagFormVars === null) {

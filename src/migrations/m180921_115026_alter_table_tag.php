@@ -1,15 +1,15 @@
 <?php
 
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\tag
+ * @package    open20\amos\tag
  * @category   CategoryName
  */
 
-use lispa\amos\tag\models\Tag;
+use open20\amos\tag\models\Tag;
 use yii\db\Migration;
 
 /**

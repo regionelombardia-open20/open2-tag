@@ -1,16 +1,15 @@
 <?php
 
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\tag\i18n\it-IT
+ * @package    open20\amos\tag\i18n\it-IT
  * @category   CategoryName
  */
 
 return [
-
     '&Egrave; un albero per aree di interesse dell\'utente?' => 'È un albero per aree di interesse dell\'utente?',
     'Abilita questa root per: ' => 'Abilita questa root per:',
     'Active' => 'Attivo',

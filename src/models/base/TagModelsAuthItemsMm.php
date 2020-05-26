@@ -1,21 +1,21 @@
 <?php
 
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\tag
+ * @package    open20\amos\tag
  * @category   CategoryName
  */
 
-namespace lispa\amos\tag\models\base;
+namespace open20\amos\tag\models\base;
 
-use lispa\amos\core\record\AmosRecordAudit;
-use lispa\amos\tag\models\Tag;
+use open20\amos\core\record\AmosRecordAudit;
+use open20\amos\tag\models\Tag;
 use mdm\admin\models\AuthItem;
 use Yii;
-use lispa\amos\tag\AmosTag;
+use open20\amos\tag\AmosTag;
 
 /**
  * This is the base-model class for table "tag_models_auth_items_mm".

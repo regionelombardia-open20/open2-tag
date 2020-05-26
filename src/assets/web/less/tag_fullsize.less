@@ -1,22 +1,32 @@
-@import (optional) "../../vendor/open20/amos-core/views/assets/web/css/less/variables.less";
 /**
 IMPORT AMOS-LAYOUT VARIABLES
  */
-@import (optional) "../../vendor/open20/amos-layout/src/assets/resources/base/less/variables.less";
+@import (optional) "../../vendor/open20/amos-layout/src/assets/resources/base/less/v2/variables.less";
+@import (optional) "../../vendor/open20/amos-layout/src/assets/resources/base/less/v2/utility.less";
 /**
 IMPORT STYLE-CUSTOM
  */
-/* @import (optional) "../../backend/web/less/style_custom.less"; */
+@import (optional) "../../backend/web/less/style_custom.less";
 
 
-.tag-widget,
-.amos-cwh-tag-tree-container,
+//.tag-widget,
+.amos-cwh-tag-tree-container, 
 .amos-tag-tree-container {
   .kv-tree-wrapper .kv-tree-nofooter{ /* override */
     border-bottom: 1px solid @border-color-default;
   }
 
   .preview_tag_tree {
+    &.col-md-4{
+      max-height: 455px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      position: relative;
+      top: 3px;
+      @media(max-width: 991px){
+        margin-bottom: @margin-large;
+      }
+    }
     .tag_selected{
       background-color: @light-background-color;
       border: 1px solid @border-color-default;
@@ -26,7 +36,7 @@ IMPORT STYLE-CUSTOM
       padding: 3px;
       text-transform: uppercase;
       display: table;
-
+      max-width: 320px; //POII-2650
       .tag_selected_part {
         display: table-cell;
 

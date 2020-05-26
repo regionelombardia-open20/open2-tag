@@ -1,18 +1,18 @@
 <?php
 
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\tag
+ * @package    open20\amos\tag
  * @category   CategoryName
  */
 
-use lispa\amos\tag\models\Tag;
+use open20\amos\tag\models\Tag;
 use kartik\tree\TreeView;
 use kartik\tree\Module;
-use lispa\amos\tag\AmosTag;
+use open20\amos\tag\AmosTag;
 
 $this->title = AmosTag::t('amostag', 'Gestione Tag');
 $this->params['breadcrumbs'][] = $this->title;
@@ -52,9 +52,9 @@ $this->params['breadcrumbs'][] = $this->title;
         'cacheSettings' => ['enableCache' => true],
         'nodeAddlViews' => [
 //            Module::VIEW_PART_1 => '',
-            Module::VIEW_PART_2 => '@vendor/lispa/amos-tag/src/views/manager/custom_fields',
+            Module::VIEW_PART_2 => '@vendor/open20/amos-tag/src/views/manager/custom_fields',
 //            Module::VIEW_PART_3 => '',
-            Module::VIEW_PART_4 => '@vendor/lispa/amos-tag/src/views/manager/roots_advanced',
+            Module::VIEW_PART_4 => '@vendor/open20/amos-tag/src/views/manager/roots_advanced',
             //\yii\helpers\Url::to(['rootsAdvanced']),
 //            Module::VIEW_PART_5 => '',
         ],

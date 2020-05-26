@@ -1,24 +1,24 @@
 <?php
 
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\tag
+ * @package    open20\amos\tag
  * @category   CategoryName
  */
 
-use lispa\amos\tag\AmosTag;
+use open20\amos\tag\AmosTag;
 
 /** @var \yii\web\View $this */
 /** @var \kartik\form\ActiveForm $form */
-/** @var \lispa\amos\tag\models\Tag $node */
+/** @var \open20\amos\tag\models\Tag $node */
 
 if ($node->isRoot()):
     $moduliTaggabili = [];
-    /** @var \lispa\amos\core\module\AmosModule $module */
-    $moduleTag = \Yii::$app->getModule(\lispa\amos\tag\AmosTag::getModuleName());
+    /** @var \open20\amos\core\module\AmosModule $module */
+    $moduleTag = \Yii::$app->getModule(\open20\amos\tag\AmosTag::getModuleName());
     foreach ($moduleTag->modelsEnabled as $module) {
         $function = new \ReflectionClass($module);
         $moduliTaggabili[$module] = $function->getShortName();

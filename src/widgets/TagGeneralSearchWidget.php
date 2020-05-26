@@ -1,18 +1,18 @@
 <?php
 
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\tag\widgets
+ * @package    open20\amos\tag\widgets
  * @category   CategoryName
  */
 
-namespace lispa\amos\tag\widgets;
+namespace open20\amos\tag\widgets;
 
-use lispa\amos\tag\models\EntitysTagsMm;
-use lispa\amos\tag\models\Tag;
+use open20\amos\tag\models\EntitysTagsMm;
+use open20\amos\tag\models\Tag;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -21,9 +21,9 @@ use yii\widgets\InputWidget;
 /**
  * Class TagWidget
  *
- * @property \lispa\amos\core\record\Record $model
+ * @property \open20\amos\core\record\Record $model
  *
- * @package lispa\amos\tag\widgets
+ * @package open20\amos\tag\widgets
  */
 class TagGeneralSearchWidget extends InputWidget
 {

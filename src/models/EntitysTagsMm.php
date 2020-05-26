@@ -1,21 +1,21 @@
 <?php
 
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\tag
+ * @package    open20\amos\tag
  * @category   CategoryName
  */
 
-namespace lispa\amos\tag\models;
+namespace open20\amos\tag\models;
 
 
 /**
  * This is the model class for table "tag".
  */
-class EntitysTagsMm extends \lispa\amos\tag\models\base\BaseEntitysTagsMm
+class EntitysTagsMm extends \open20\amos\tag\models\base\BaseEntitysTagsMm
 {
 
 

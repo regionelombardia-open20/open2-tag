@@ -1,16 +1,16 @@
 <?php
 
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\tag
+ * @package    open20\amos\tag
  * @category   CategoryName
  */
 
-namespace lispa\amos\tag\models;
-use lispa\amos\tag\models\base\TagModelsAuthItemsMm as TagModelsAuthItemsMmBase;
+namespace open20\amos\tag\models;
+use open20\amos\tag\models\base\TagModelsAuthItemsMm as TagModelsAuthItemsMmBase;
 
 
 /**

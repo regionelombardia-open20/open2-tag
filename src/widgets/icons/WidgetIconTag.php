@@ -1,18 +1,18 @@
 <?php
 
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\tag
+ * @package    open20\amos\tag
  * @category   CategoryName
  */
 
-namespace lispa\amos\tag\widgets\icons;
+namespace open20\amos\tag\widgets\icons;
 
-use lispa\amos\core\widget\WidgetIcon;
-use lispa\amos\tag\AmosTag;
+use open20\amos\core\widget\WidgetIcon;
+use open20\amos\tag\AmosTag;
 use Yii;
 use yii\helpers\ArrayHelper;
 

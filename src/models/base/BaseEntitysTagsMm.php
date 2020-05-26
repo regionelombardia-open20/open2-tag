@@ -1,18 +1,18 @@
 <?php
 
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\tag
+ * @package    open20\amos\tag
  * @category   CategoryName
  */
 
-namespace lispa\amos\tag\models\base;
+namespace open20\amos\tag\models\base;
 
-use lispa\amos\core\record\Record;
-use lispa\amos\tag\AmosTag;
+use open20\amos\core\record\Record;
+use open20\amos\tag\AmosTag;
 
 /**
  * This is the base-model class for table "tag".
@@ -30,7 +30,7 @@ use lispa\amos\tag\AmosTag;
  * @property integer $deleted_by
  * @property integer $version
  *
- * @property \lispa\amos\tag\models\Tag $tag
+ * @property \open20\amos\tag\models\Tag $tag
  */
 class BaseEntitysTagsMm extends Record
 {
@@ -78,6 +78,6 @@ class BaseEntitysTagsMm extends Record
      */
     public function getTag()
     {
-        return $this->hasOne(\lispa\amos\tag\models\Tag::className(), ['id' => 'tag_id']);
+        return $this->hasOne(\open20\amos\tag\models\Tag::className(), ['id' => 'tag_id']);
     }
 }

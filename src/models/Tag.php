@@ -1,23 +1,23 @@
 <?php
 
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\tag
+ * @package    open20\amos\tag
  * @category   CategoryName
  */
 
-namespace lispa\amos\tag\models;
+namespace open20\amos\tag\models;
 
 use creocoder\nestedsets\NestedSetsBehavior;
-use lispa\amos\tag\models\search\TagQuery;
+use open20\amos\tag\models\search\TagQuery;
 
 /**
  * This is the model class for table "tag".
  */
-class Tag extends \lispa\amos\tag\models\base\BaseTag
+class Tag extends \open20\amos\tag\models\base\BaseTag
 {
 
     public static function find()
@@ -72,11 +72,11 @@ class Tag extends \lispa\amos\tag\models\base\BaseTag
             if(isset($moduleCwh)) {
                 if (isset($_POST['CwhTagInterestMm'])) {
                     // delete all occurence of $tagId
-                    \lispa\amos\cwh\models\CwhTagInterestMm::deleteAll(['tag_id' => $tagId]);
+                    \open20\amos\cwh\models\CwhTagInterestMm::deleteAll(['tag_id' => $tagId]);
                     $CwhTagInterestMm = $_POST['CwhTagInterestMm'];
                     foreach ($CwhTagInterestMm as $moduleName => $rolesArray) {
                         foreach ($rolesArray as $key => $roleName) {
-                            $modelTagModels = new \lispa\amos\cwh\models\CwhTagInterestMm();
+                            $modelTagModels = new \open20\amos\cwh\models\CwhTagInterestMm();
                             $modelTagModels->tag_id = $tagId;
                             $modelTagModels->classname = $moduleName;
                             $modelTagModels->auth_item = $roleName;
@@ -85,7 +85,7 @@ class Tag extends \lispa\amos\tag\models\base\BaseTag
                         }
                     }
                 } else {
-                    \lispa\amos\cwh\models\CwhTagInterestMm::deleteAll(['tag_id' => $tagId]);
+                    \open20\amos\cwh\models\CwhTagInterestMm::deleteAll(['tag_id' => $tagId]);
                 }
             }
         }
@@ -158,7 +158,7 @@ class Tag extends \lispa\amos\tag\models\base\BaseTag
         $ret = [];
         $moduleCwh = \Yii::$app->getModule('cwh');
         if(isset($moduleCwh)) {
-            $listaElementi = \lispa\amos\cwh\models\CwhTagInterestMm::findAll([
+            $listaElementi = \open20\amos\cwh\models\CwhTagInterestMm::findAll([
                 'tag_id' => $this->id,
                 'classname' => $classname
             ]);

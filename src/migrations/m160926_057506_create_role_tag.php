@@ -1,17 +1,17 @@
 <?php
 
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\tag
+ * @package    open20\amos\tag
  * @category   CategoryName
  */
 
 use yii\db\Migration;
 
-use lispa\amos\core\migration\AmosMigration;
+use open20\amos\core\migration\AmosMigration;
 use yii\rbac\Permission;
 
 class m160926_057506_create_role_tag extends AmosMigration
@@ -19,6 +19,7 @@ class m160926_057506_create_role_tag extends AmosMigration
 
     /**
      * Use this instead of function up().
+     * @see \Yii\db\Migration::safeUp() for more info.
      */
     public function safeUp()
     {
@@ -28,6 +29,7 @@ class m160926_057506_create_role_tag extends AmosMigration
 
     /**
      * Use this instead of function down().
+     * @see \Yii\db\Migration::safeDown() for more info.
      */
     public function safeDown()
     {
@@ -114,14 +116,14 @@ class m160926_057506_create_role_tag extends AmosMigration
     {
         return [
             [
-                'name' =>\lispa\amos\tag\widgets\icons\WidgetIconTag::className(),
+                'name' =>\open20\amos\tag\widgets\icons\WidgetIconTag::className(),
                 'type' => Permission::TYPE_PERMISSION,
                 'description' => 'Permesso per il widget WidgetIconTag',
                 'ruleName' => null,
                 'parent' => ['AMMINISTRATORE_TAG']
             ],
             [
-                'name' =>\lispa\amos\tag\widgets\icons\WidgetIconTagManager::className(),
+                'name' =>\open20\amos\tag\widgets\icons\WidgetIconTagManager::className(),
                 'type' => Permission::TYPE_PERMISSION,
                 'description' => 'Permesso per il widget WidgetIconTagManager',
                 'ruleName' => null,

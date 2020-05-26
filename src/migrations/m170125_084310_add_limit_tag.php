@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\tag
+ * @package    open20\amos\tag
  * @category   CategoryName
  */
 
@@ -22,6 +22,7 @@ class m170125_084310_add_limit_tag extends \yii\db\Migration
 
     /**
      * Use this instead of function up().
+     * @see \Yii\db\Migration::safeUp() for more info.
      */
     public function safeUp()
     {
@@ -37,6 +38,7 @@ class m170125_084310_add_limit_tag extends \yii\db\Migration
 
     /**
      * Use this instead of function down().
+     * @see \Yii\db\Migration::safeDown() for more info.
      */
     public function safeDown()
     {

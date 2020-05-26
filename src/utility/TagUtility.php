@@ -1,25 +1,25 @@
 <?php
 
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\tag\utility
+ * @package    open20\amos\tag\utility
  * @category   CategoryName
  */
 
-namespace lispa\amos\tag\utility;
+namespace open20\amos\tag\utility;
 
-use lispa\amos\tag\models\EntitysTagsMm;
-use lispa\amos\tag\models\Tag;
+use open20\amos\tag\models\EntitysTagsMm;
+use open20\amos\tag\models\Tag;
 use yii\base\BaseObject;
 use yii\db\ActiveQuery;
 use yii\db\Query;
 
 /**
  * Class TagUtility
- * @package lispa\amos\tag\utility
+ * @package open20\amos\tag\utility
  */
 class TagUtility extends BaseObject
 {
@@ -62,5 +62,34 @@ class TagUtility extends BaseObject
         $query->andWhere([$entityTagsMmTable . '.record_id' => $modelId]);
         $tagIds = $query->column();
         return $tagIds;
+    }
+
+    /**
+     * This method returns all root tags.
+     * @return Tag[]
+     */
+    public static function findAllRootTags()
+    {
+        /** @var ActiveQuery $query */
+        $query = Tag::find();
+        $query->groupBy(['root']);
+        $rootTags = $query->all();
+        return $rootTags;
+    }
+
+    /**
+     * This method returns all root tag ids.
+     * @return array
+     */
+    public static function findAllRootTagIds()
+    {
+        $tagTable = Tag::tableName();
+        $query = new Query();
+        $query->select(['root']);
+        $query->from($tagTable);
+        $query->andWhere(['deleted_at' => null]);
+        $query->groupBy(['root']);
+        $rootIds = $query->column();
+        return $rootIds;
     }
 }

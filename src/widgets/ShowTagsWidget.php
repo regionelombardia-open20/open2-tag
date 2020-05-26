@@ -1,25 +1,25 @@
 <?php
 
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package     lispa\amos\tag\widgets
+ * @package     open20\amos\tag\widgets
  * @category   CategoryName
  */
 
-namespace lispa\amos\tag\widgets;
+namespace open20\amos\tag\widgets;
 
-use lispa\amos\core\record\Record;
-use lispa\amos\tag\AmosTag;
-use lispa\amos\tag\models\Tag;
-use lispa\amos\tag\models\TagModelsAuthItemsMm;
+use open20\amos\core\record\Record;
+use open20\amos\tag\AmosTag;
+use open20\amos\tag\models\Tag;
+use open20\amos\tag\models\TagModelsAuthItemsMm;
 use yii\base\Widget;
 
 /**
  * Class ShowTagsWidget
- * @package lispa\amos\tag\widgets
+ * @package open20\amos\tag\widgets
  */
 class ShowTagsWidget extends Widget
 {

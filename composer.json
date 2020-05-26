@@ -1,21 +1,21 @@
 {
-    "name": "lispa/amos-tag",
+    "name": "open20/amos-tag",
     "description": "Sistema AMOS per le TAG",
     "keywords": ["amos", "yii2", "tag"],
     "homepage": "http://www.example.com/",
     "type": "project",
-    "proscription": "BSD-3-Clause",
+    "license": "BSD-3-Clause",
     "support": {
         "forum": "http://www.example.com/forum/",
         "wiki": "http://www.example.com/wiki/"        
     },
     "require": {
         "php": ">=5.4.0",
-        "lispa/amos-core" : "*",
-        "lispa/amos-admin" : "*",
-        "lispa/amos-dashboard" : "*",
+        "open20/amos-core":"~1.9",
+        "open20/amos-admin":">=1.8",
+        "open20/amos-dashboard":"~1.5",
         "creocoder/yii2-nested-sets": "0.9.*",
-        "kartik-v/yii2-tree-manager": "1.0.8"
+        "open20/yii2-tree-manager": "~2.0.0"
     },
     "config": {
         "process-timeout": 1800,
@@ -29,7 +29,7 @@
     },
     "autoload": {
         "psr-4": {
-            "lispa\\amos\\tag\\": "src"
+            "open20\\amos\\tag\\": "src"
         }
     },
     "require-dev": {

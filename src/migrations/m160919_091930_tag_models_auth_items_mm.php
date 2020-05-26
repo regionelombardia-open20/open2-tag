@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\tag
+ * @package    open20\amos\tag
  * @category   CategoryName
  */
 
@@ -17,7 +17,7 @@ class m160919_091930_tag_models_auth_items_mm extends Migration
 
     public function __construct()
     {
-        $this->tabella = \lispa\amos\tag\models\TagModelsAuthItemsMm::tableName();
+        $this->tabella = \open20\amos\tag\models\TagModelsAuthItemsMm::tableName();
         parent::__construct();
     }
 

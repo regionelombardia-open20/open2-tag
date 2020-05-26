@@ -1,7 +1,16 @@
 <?php
 
+/**
+ * Aria S.p.A.
+ * OPEN 2.0
+ *
+ *
+ * @package    Open20Package
+ * @category   CategoryName
+ */
+
 use yii\db\Migration;
-use lispa\amos\dashboard\models\AmosWidgets;
+use open20\amos\dashboard\models\AmosWidgets;
 
 class m170919_132221_change_widget_level extends Migration
 {
@@ -12,24 +21,24 @@ class m170919_132221_change_widget_level extends Migration
      */
     public function safeUp()
     {
-        if ($this->checkWidgetExist(\lispa\amos\tag\widgets\icons\WidgetIconTagManager::className())) {
+        if ($this->checkWidgetExist(\open20\amos\tag\widgets\icons\WidgetIconTagManager::className())) {
 
             $this->update(AmosWidgets::tableName(),
             [
              'dashboard_visible' => 1,
               'child_of' => ''
             ],[
-                'classname' => \lispa\amos\tag\widgets\icons\WidgetIconTagManager::className()
+                'classname' => \open20\amos\tag\widgets\icons\WidgetIconTagManager::className()
                 ]);
         }
-        if ($this->checkWidgetExist(\lispa\amos\tag\widgets\icons\WidgetIconTag::className())) {
+        if ($this->checkWidgetExist(\open20\amos\tag\widgets\icons\WidgetIconTag::className())) {
 
             $this->update(AmosWidgets::tableName(),
                 [
                     'dashboard_visible' => 0,
                     'status' => AmosWidgets::STATUS_DISABLED,
                 ],[
-                    'classname' => \lispa\amos\tag\widgets\icons\WidgetIconTag::className()
+                    'classname' => \open20\amos\tag\widgets\icons\WidgetIconTag::className()
                 ]);
         }
         return true;
@@ -55,24 +64,24 @@ class m170919_132221_change_widget_level extends Migration
     public function safeDown()
     {
 
-        if ($this->checkWidgetExist(\lispa\amos\tag\widgets\icons\WidgetIconTagManager::className())) {
+        if ($this->checkWidgetExist(\open20\amos\tag\widgets\icons\WidgetIconTagManager::className())) {
 
             $this->update(AmosWidgets::tableName(),
                 [
                     'dashboard_visible' => 0,
-                    'child_of' => \lispa\amos\tag\widgets\icons\WidgetIconTag::className()
+                    'child_of' => \open20\amos\tag\widgets\icons\WidgetIconTag::className()
                 ],[
-                    'classname' => \lispa\amos\tag\widgets\icons\WidgetIconTagManager::className()
+                    'classname' => \open20\amos\tag\widgets\icons\WidgetIconTagManager::className()
                 ]);
         }
-        if ($this->checkWidgetExist(\lispa\amos\tag\widgets\icons\WidgetIconTag::className())) {
+        if ($this->checkWidgetExist(\open20\amos\tag\widgets\icons\WidgetIconTag::className())) {
 
             $this->update(AmosWidgets::tableName(),
                 [
                     'dashboard_visible' => 1,
                     'status' => AmosWidgets::STATUS_ENABLED,
                 ],[
-                    'classname' => \lispa\amos\tag\widgets\icons\WidgetIconTag::className()
+                    'classname' => \open20\amos\tag\widgets\icons\WidgetIconTag::className()
                 ]);
         }
 

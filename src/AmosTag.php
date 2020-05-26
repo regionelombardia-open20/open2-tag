@@ -1,25 +1,25 @@
 <?php
 
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\tag
+ * @package    open20\amos\tag
  * @category   CategoryName
  */
 
-namespace lispa\amos\tag;
+namespace open20\amos\tag;
 
-use lispa\amos\core\module\AmosModule;
-use lispa\amos\core\record\Record;
-use lispa\amos\tag\widgets\icons\WidgetIconTag;
-use lispa\amos\tag\widgets\icons\WidgetIconTagManager;
+use open20\amos\core\module\AmosModule;
+use open20\amos\core\record\Record;
+use open20\amos\tag\widgets\icons\WidgetIconTag;
+use open20\amos\tag\widgets\icons\WidgetIconTagManager;
 use Yii;
 
 class AmosTag extends AmosModule {
 
-  public $controllerNamespace = 'lispa\amos\tag\controllers';
+  public $controllerNamespace = 'open20\amos\tag\controllers';
 
   /**
    * @var string
@@ -32,7 +32,7 @@ class AmosTag extends AmosModule {
   public $modelsEnabled = [
   ];
   public $behaviors = [
-    'lispa\amos\core\behaviors\TaggableBehavior'
+    'open20\amos\core\behaviors\TaggableBehavior'
   ];
   public $name = 'Tag';
 
@@ -45,7 +45,7 @@ class AmosTag extends AmosModule {
     parent::init();
     
     Record::$modulesChainBehavior[] = 'tag';
-    Yii::setAlias('@lispa/amos/' . static::getModuleName() . '/controllers', __DIR__ . '/controllers');
+    Yii::setAlias('@open20/amos/' . static::getModuleName() . '/controllers', __DIR__ . '/controllers');
     
     //aggiunge le configurazioni trovate nel file config/config.php
     Yii::configure($this, require(__DIR__ . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.php'));

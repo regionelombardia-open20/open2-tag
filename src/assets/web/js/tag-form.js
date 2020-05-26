@@ -69,7 +69,7 @@ TagForm.initTree = function(tags_selected, id_tree, limit_tree, data_trees, inde
 
         if (key && name) {
             keyNodes = key.split(',');
-            nameNodes = name.split(',');
+            nameNodes = name.split('||');
 
             $.each(keyNodes, function (index, keyNode) {
                 if (!keyNode) {

@@ -1,16 +1,16 @@
 <?php
 
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\tag
+ * @package    open20\amos\tag
  * @category   CategoryName
  */
 
 use yii\db\Migration;
-use lispa\amos\dashboard\models\AmosWidgets;
+use open20\amos\dashboard\models\AmosWidgets;
 
 class m160926_055506_tag_create_widgets extends Migration
 {
@@ -32,14 +32,14 @@ class m160926_055506_tag_create_widgets extends Migration
     {
         $this->widgets = [
             [
-                'classname' => \lispa\amos\tag\widgets\icons\WidgetIconTagManager::className(),
+                'classname' => \open20\amos\tag\widgets\icons\WidgetIconTagManager::className(),
                 'type' => AmosWidgets::TYPE_ICON,
                 'module' => self::MODULE_NAME,
                 'status' => AmosWidgets::STATUS_ENABLED,
-                'child_of' => \lispa\amos\tag\widgets\icons\WidgetIconTag::className()
+                'child_of' => \open20\amos\tag\widgets\icons\WidgetIconTag::className()
             ],
             [
-                'classname' => \lispa\amos\tag\widgets\icons\WidgetIconTag::className(),
+                'classname' => \open20\amos\tag\widgets\icons\WidgetIconTag::className(),
                 'type' => AmosWidgets::TYPE_ICON,
                 'module' => self::MODULE_NAME,
                 'status' => AmosWidgets::STATUS_ENABLED

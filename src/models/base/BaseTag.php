@@ -1,17 +1,17 @@
 <?php
 
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\tag\models\base
+ * @package    open20\amos\tag\models\base
  * @category   CategoryName
  */
 
-namespace lispa\amos\tag\models\base;
+namespace open20\amos\tag\models\base;
 
-use lispa\amos\tag\AmosTag;
+use open20\amos\tag\AmosTag;
 use kartik\tree\models\Tree;
 
 /**
@@ -56,9 +56,9 @@ use kartik\tree\models\Tree;
  *
  * @property TagModelsAuthItemsMm[] $tagAuthItemsMms
  * @property CwhTagInterestMm[] $cwhTagInterestMm
- * @property \lispa\amos\tag\models\EntitysTagsMm[] $entitysTagsMms
+ * @property \open20\amos\tag\models\EntitysTagsMm[] $entitysTagsMms
  *
- * @package lispa\amos\tag\models\base
+ * @package open20\amos\tag\models\base
  */
 class BaseTag extends Tree
 {
@@ -154,7 +154,7 @@ class BaseTag extends Tree
      */
     public function getUserProfiles()
     {
-        return $this->hasMany(\lispa\amos\admin\models\UserProfile::className(),
+        return $this->hasMany(\open20\amos\admin\models\UserProfile::className(),
             ['id' => 'user_profile_id'])->viaTable('user_profile_tag_mm', ['tag_id' => 'id']);
     }
 
@@ -163,7 +163,7 @@ class BaseTag extends Tree
      */
     public function getTagModelsAuthItems()
     {
-        return $this->hasMany(\lispa\amos\tag\models\TagModelsAuthItemsMm::className(),
+        return $this->hasMany(\open20\amos\tag\models\TagModelsAuthItemsMm::className(),
             ['tag_id' => 'id'])->inverseOf('tag');
     }
 
@@ -174,7 +174,7 @@ class BaseTag extends Tree
     {
         $moduleCwh = \Yii::$app->getModule('cwh');
         if (isset($moduleCwh)) {
-            return $this->hasMany(\lispa\amos\cwh\models\CwhTagInterestMm::className(),
+            return $this->hasMany(\open20\amos\cwh\models\CwhTagInterestMm::className(),
                 ['tag_id' => 'id'])->inverseOf('tag');
         }
         return null;
@@ -185,6 +185,6 @@ class BaseTag extends Tree
      */
     public function getEntitysTagsMms()
     {
-        return $this->hasMany(\lispa\amos\tag\models\EntitysTagsMm::className(), ['tag_id' => 'id']);
+        return $this->hasMany(\open20\amos\tag\models\EntitysTagsMm::className(), ['tag_id' => 'id']);
     }
 }
