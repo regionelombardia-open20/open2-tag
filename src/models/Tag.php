@@ -194,4 +194,38 @@ class Tag extends \open20\amos\tag\models\base\BaseTag
         return $root;
     }
 
+    /**
+     * get Name for root tag
+     *
+     * @return string
+     */
+    public function getRootName(){
+		$root = $this->getTagRoot();
+		return $root->nome;
+	}
+	
+	/**
+     * get Name for Father and Son tag 
+     *
+     * @return string
+     */
+	public function getFather(){		
+		$lvl = $this->lvl - 1;
+		$father = null;
+		if($lvl > 0){
+			$father = Tag::find()
+			->andWhere(['<','lft', $this->lft])
+			->andWhere(['>', 'rgt', $this->rgt])
+			->andWhere(['lvl' => $lvl])
+			->andWhere(['root' => $this->root])
+			->andWhere(['<>', 'root', $this->id])
+			->andWhere(['>', 'lvl', 0])
+			->one();			
+		}
+		if(!empty($father)){
+			return $father->nome . ' - ' . $this->nome;
+		}
+		return $this->nome;
+	}
+
 }
