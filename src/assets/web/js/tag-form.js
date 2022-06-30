@@ -12,7 +12,8 @@ $(document).ready(function() {
                 //avoid send malformed string as selected nodes on submit - eg. string will be directly used in search query
                 $('body').on('submit', 'form', function (e) {
                     var values = $("#tree_obj_"+id_tree).val();
-                    if(values.length){
+                    
+                    if (values) {
                         if(values.charAt(0)== ','){
                             values = values.substr(1);
                         }
