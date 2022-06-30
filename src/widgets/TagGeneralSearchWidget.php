@@ -186,7 +186,7 @@ class TagGeneralSearchWidget extends InputWidget
      */
     private function getAllRoles()
     {
-        if (Yii::$app->getModule('admin')->modelMap['UserProfile'] == get_class($this->model)) {
+        if (\open20\amos\admin\AmosAdmin::instance()->modelMap['UserProfile'] == get_class($this->model)) {
             $keysRoles = array_keys(\Yii::$app->getAuthManager()->getRolesByUser($this->model['user_id']));
         } else {
             $keysRoles = array_keys(\Yii::$app->getAuthManager()->getRolesByUser(\Yii::$app->getUser()->getId()));

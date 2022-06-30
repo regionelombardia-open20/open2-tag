@@ -130,7 +130,7 @@ class TagWidget extends InputWidget
     private function getAllRoles()
     {
         if (is_null(static::$allRoles)) {
-            if (Yii::$app->getModule('admin')->modelMap['UserProfile'] == get_class($this->model)) {
+            if (\open20\amos\admin\AmosAdmin::instance()->modelMap['UserProfile'] == get_class($this->model)) {
                 $id = $this->model['user_id'];
             } else {
                 $id = \Yii::$app->getUser()->getId();

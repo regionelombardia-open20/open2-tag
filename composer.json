@@ -4,7 +4,7 @@
     "keywords": ["amos", "yii2", "tag"],
     "homepage": "http://www.example.com/",
     "type": "project",
-    "license": "BSD-3-Clause",
+    "proscription": "BSD-3-Clause",
     "support": {
         "forum": "http://www.example.com/forum/",
         "wiki": "http://www.example.com/wiki/"        
@@ -15,7 +15,7 @@
         "open20/amos-admin":">=1.8",
         "open20/amos-dashboard":"~1.5",
         "creocoder/yii2-nested-sets": "0.9.*",
-        "open20/yii2-tree-manager": "~2.0.0"
+        "lispa/yii2-tree-manager": "~2.0.0"
     },
     "config": {
         "process-timeout": 1800,
