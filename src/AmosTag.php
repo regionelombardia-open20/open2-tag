@@ -21,7 +21,7 @@ use Yii;
  * Class AmosTag
  * @package open20\amos\tag
  */
-class AmosTag extends AmosModule
+class AmosTag extends AmosModule implements \open20\amos\core\interfaces\CmsModuleInterface, \open20\amos\core\interfaces\SearchModuleInterface
 { 
     public $controllerNamespace = 'open20\amos\tag\controllers';
 
@@ -123,6 +123,7 @@ class AmosTag extends AmosModule
             'EntitysTagsMm' => __NAMESPACE__ . '\\' . 'models\EntitysTagsMm',
             'Tag' => __NAMESPACE__ . '\\' . 'models\Tag',
             'TagModelsAuthItemsMm' => __NAMESPACE__ . '\\' . 'models\TagModelsAuthItemsMm',
+            'TagSearch' => __NAMESPACE__ . '\\' . 'models\search\TagSearch',
         ];
     }
     
@@ -143,4 +144,20 @@ class AmosTag extends AmosModule
         }
         return $menu;
     }
+
+    public static function getModelClassName()
+    {
+        return AmosTag::instance()->model('Tag');
+    }
+
+    public static function getModelSearchClassName()
+    {
+        return AmosTag::instance()->model('TagSearch');
+    }
+
+    public static function getModuleIconName() 
+    {
+         return null;
+    }
+
 }

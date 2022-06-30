@@ -137,6 +137,31 @@ class TagUtility extends BaseObject
     }
     
     /**
+     * 
+     * @param integer $rootId
+     * @param bool $onlyIds
+     * @return array
+     */
+    public static function findTagsByRootId($rootId, $onlyIds = false)
+    {
+        $childrenIds = [];
+        $tagRoot = Tag::findOne(['root' => $rootId]);
+        if(!is_null($tagRoot))
+        {
+            $children = $tagRoot->children()->all();
+            if (!$onlyIds) {
+                return $children;
+            }
+
+            foreach ($children as $child) {
+                /** @var Tag $child */
+                $childrenIds[$child->id] = $child->id;
+            }
+        }
+        return $childrenIds;
+    }
+    
+    /**
      * @param string $name
      * @param Tag|null $parent
      * @return Tag|null

@@ -31,5 +31,5 @@ if ($noNodesMessage) {
     </div>
     <div class="col-sm-12">
         <?php echo $form->field($node, 'descrizione')->textarea(['rows' => 6]); ?>
-    </div>
+    </div> 
 </div>

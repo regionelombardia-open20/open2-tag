@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
     /**
         @todo Add all AM ICONS to iconEditSettings listData property
     */
-    .field-tag-icon {
+    .field-tag-icon_type {
         display: none;
     }
 </style>
@@ -42,7 +42,8 @@ $this->params['breadcrumbs'][] = $this->title;
         'isAdmin' => Yii::$app->user->can('AMMINISTRATORE_TAG')? true: false,
         'displayValue' => 1,
         'iconEditSettings' => [
-            'show' => 'list',
+            'show' => 'text',
+            'type' => 1,
             /*'listData' => [
                 'home' => 'Appartamento',
                 'building-o' => 'Condominio',
