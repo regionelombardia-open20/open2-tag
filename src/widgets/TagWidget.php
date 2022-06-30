@@ -11,11 +11,13 @@
 
 namespace open20\amos\tag\widgets;
 
+use open20\amos\tag\AmosTag;
 use open20\amos\tag\models\EntitysTagsMm;
 use open20\amos\tag\models\Tag;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\db\Query;
 use yii\widgets\InputWidget;
 
 /**
@@ -27,6 +29,10 @@ use yii\widgets\InputWidget;
  */
 class TagWidget extends InputWidget
 {
+    /**
+     * @var AmosTag $tagModule
+     */
+    public $tagModule = null;
 
     public
         $id = 'amos-tag', // @var string $id the id of the widget container div
@@ -51,6 +57,8 @@ class TagWidget extends InputWidget
      */
     public function init()
     {
+        $this->tagModule = AmosTag::instance();
+
         parent::init();
 
         if (!isset($this->form_values)) {
@@ -79,22 +87,22 @@ class TagWidget extends InputWidget
         $tagsSelected = $this->form_values ? $this->getTagsSelectedFromFormValues() : $this->getTagsSelected();
 
         return $this->render(
-                'tag',
-                [
-                    'model' => $this->model,
-                    'form' => $this->form,
-                    'name' => $this->name,
-                    'trees' => $this->trees,
-                    'is_search' => $this->isSearch,
-                    'tags_selected' => $tagsSelected,
-                    'limit_trees' => $this->getLimitTrees(),
-                    'hideHeader' => $this->hideHeader,
-                    'id' => $this->id,
-                    'containerClass' => $this->containerClass,
-                    'moduleCwh' => $this->moduleCwh,
-                    'scope' => $this->scope,
-                    'selectSonsOnly' => $this->selectSonsOnly
-                ]
+            'tag',
+            [
+                'model' => $this->model,
+                'form' => $this->form,
+                'name' => $this->name,
+                'trees' => $this->trees,
+                'is_search' => $this->isSearch,
+                'tags_selected' => $tagsSelected,
+                'limit_trees' => $this->getLimitTrees(),
+                'hideHeader' => $this->hideHeader,
+                'id' => $this->id,
+                'containerClass' => $this->containerClass,
+                'moduleCwh' => $this->moduleCwh,
+                'scope' => $this->scope,
+                'selectSonsOnly' => $this->selectSonsOnly
+            ]
         );
     }
 
@@ -111,17 +119,17 @@ class TagWidget extends InputWidget
         $query = Tag::find()
             ->joinWith('tagModelsAuthItems')
             ->andWhere([
-            'classname' => [get_class($this->model), $parentClass],
-            'auth_item' => $this->getAllRoles()
-        ]);
+                'classname' => [get_class($this->model), $parentClass],
+                'auth_item' => $this->getAllRoles()
+            ]);
 
         if (!empty($this->singleFixedTreeId)) {
             $query->andWhere(["tag.id" => $this->singleFixedTreeId]);
         }
 
         return $query
-                ->orderBy(['tag.nome' => SORT_DESC])
-                ->all();
+            ->orderBy(['tag.nome' => SORT_DESC])
+            ->all();
     }
 
     /**
@@ -130,7 +138,7 @@ class TagWidget extends InputWidget
     private function getAllRoles()
     {
         if (is_null(static::$allRoles)) {
-            if (\open20\amos\admin\AmosAdmin::instance()->modelMap['UserProfile'] == get_class($this->model)) {
+            if (Yii::$app->getModule('admin')->modelMap['UserProfile'] == get_class($this->model)) {
                 $id = $this->model['user_id'];
             } else {
                 $id = \Yii::$app->getUser()->getId();
@@ -158,38 +166,69 @@ class TagWidget extends InputWidget
     /**
      * Data la tabella delle mm tra record e oggetti, recupera le row
      * dell'oggetto per il model in esame
-     * 
+     *
      * Returns the selected tags for the passed record.
      * @return array
      */
     private function getTagsSelected()
     {
-        $listaTagId = EntitysTagsMm::findAll([
-                'classname' => get_class($this->model),
-                'record_id' => $this->model->id,
-        ]);
-
         $ret = [];
-        foreach ($listaTagId as $tag) {
-            //recupera il tag
-            $tagObj = $this->getTagById($tag->tag_id);
 
-            if (!empty($tagObj)) {
-                //identifica l'id dell'albero
-                $id_tree = $tagObj->root;
+        if ($this->model->isNewRecord) {
+            $attributeName = $this->name;
+            $tagValues = $this->model->{$attributeName};
 
-                //verifica se esiste già il riferimento per l'albero in esame
-                //e nel caso la crea
-                if (!array_key_exists("tree_" . $id_tree, $ret)) {
-                    $ret["tree_" . $id_tree] = [];
-                }
+            if (empty($tagValues)) {
+                return $ret;
+            } else {
+                /** @var Tag $tagModel */
+                $tagModel = $this->tagModule->createModel('Tag');
+                $tagTable = $tagModel::tableName();
+                $tagsToSearchArray = explode(',', trim(str_replace(' ', '', $tagValues)));
 
-                //aggiunge il tag nell'elenco dell'albero relativo
-                $ret["tree_" . $id_tree][] = [
-                    "id" => $tagObj->id,
-                    "label" => $tagObj->nome
-                ];
+                $query = new Query();
+                $query->select([$tagTable . '.id', $tagTable . '.nome', $tagTable . '.root']);
+                $query->from($tagTable);
+                $query->andWhere([$tagTable . '.deleted_at' => null]);
+                $query->andWhere([$tagTable . '.id' => $tagsToSearchArray]);
+
+                $tags = $query->all();
             }
+        } else {
+            /** @var Tag $tagModel */
+            $tagModel = $this->tagModule->createModel('Tag');
+            $tagTable = $tagModel::tableName();
+
+            /** @var EntitysTagsMm $entitysTagsMmModel */
+            $entitysTagsMmModel = $this->tagModule->createModel('EntitysTagsMm');
+            $entitysTagsMmTable = $entitysTagsMmModel::tableName();
+
+            $query = new Query();
+            $query->select([$tagTable . '.id', $tagTable . '.nome', $tagTable . '.root']);
+            $query->from($entitysTagsMmTable);
+            $query->innerJoin($tagTable, $tagTable . '.id = ' . $entitysTagsMmTable . '.tag_id');
+            $query->andWhere([$tagTable . '.deleted_at' => null]);
+            $query->andWhere([$entitysTagsMmTable . '.deleted_at' => null]);
+            $query->andWhere([$entitysTagsMmTable . '.classname' => get_class($this->model)]);
+            $query->andWhere([$entitysTagsMmTable . '.record_id' => $this->model->id]);
+
+            $tags = $query->all();
+        }
+
+        foreach ($tags as $tag) {
+            // Identifica l'id dell'albero
+            $id_tree = $tag['root'];
+
+            // Verifica se esiste già il riferimento per l'albero in esame e nel caso la crea
+            if (!array_key_exists("tree_" . $id_tree, $ret)) {
+                $ret["tree_" . $id_tree] = [];
+            }
+
+            // Aggiunge il tag nell'elenco dell'albero relativo
+            $ret["tree_" . $id_tree][] = [
+                "id" => $tag['id'],
+                "label" => $tag['nome']
+            ];
         }
 
         return $ret;
@@ -280,9 +319,9 @@ class TagWidget extends InputWidget
         /*         * @var ActiveQuery $query * */
 
         return Tag::find()
-                ->joinWith('tagAuthItemsMms')
-                ->andWhere(['auth_item' => array_keys(\Yii::$app->authManager->getRolesByUser(\Yii::$app->getUser()->getId()))])
-                ->all();
+            ->joinWith('tagAuthItemsMms')
+            ->andWhere(['auth_item' => array_keys(\Yii::$app->authManager->getRolesByUser(\Yii::$app->getUser()->getId()))])
+            ->all();
     }
 
 }

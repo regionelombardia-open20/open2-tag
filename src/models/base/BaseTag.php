@@ -54,8 +54,8 @@ use kartik\tree\models\Tree;
  * @property integer $deleted_by
  * @property integer $version
  *
- * @property TagModelsAuthItemsMm[] $tagAuthItemsMms
- * @property CwhTagInterestMm[] $cwhTagInterestMm
+ * @property \open20\amos\tag\models\TagModelsAuthItemsMm[] $tagAuthItemsMms
+ * @property \open20\amos\cwh\models\CwhTagInterestMm[] $cwhTagInterestMm
  * @property \open20\amos\tag\models\EntitysTagsMm[] $entitysTagsMms
  *
  * @package open20\amos\tag\models\base

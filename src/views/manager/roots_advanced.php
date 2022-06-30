@@ -74,8 +74,8 @@ if ($node->isRoot()):
             <div class="checkbox">
                 <?php
                 echo \kartik\select2\Select2::widget([
-                    'name' => 'CwhTagInterestMm[' . \open20\amos\admin\AmosAdmin::instance()->modelMap['UserProfile'] . ']',
-                    'value' => $node->getAssignedInterestByClassname(\open20\amos\admin\AmosAdmin::instance()->modelMap['UserProfile']),
+                    'name' => 'CwhTagInterestMm[' . Yii::$app->getModule('admin')->modelMap['UserProfile'] . ']',
+                    'value' => $node->getAssignedInterestByClassname(Yii::$app->getModule('admin')->modelMap['UserProfile']),
                     'data' => $ruoliDaScegliere,
                     'options' => ['placeholder' => AmosTag::t('amostag','Seleziona un ruolo...'), 'multiple' => true],
                     'pluginOptions' => [

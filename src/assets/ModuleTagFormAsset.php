@@ -19,6 +19,7 @@ class ModuleTagFormAsset extends AssetBundle
     public $sourcePath = '@vendor/open20/amos-tag/src/assets/web';
 
     public $css = [
+        'less/tag.less' 
     ];
     public $js = [
         'js/tag-form.js',
@@ -35,18 +36,16 @@ class ModuleTagFormAsset extends AssetBundle
 
     public function init()
     {
+        $moduleL = \Yii::$app->getModule('layout');
 
-        if (!empty(\Yii::$app->params['bsVersion']) && \Yii::$app->params['bsVersion'] == '4.x') {
-
-        } else {
-            if(!empty(\Yii::$app->params['dashboardEngine']) && \Yii::$app->params['dashboardEngine'] == WidgetAbstract::ENGINE_ROWS){
-                $this->css = ['less/tag_fullsize.less'];
-            }else {
-                $this->css = ['less/tag.less'];
-            }
+        if(!empty(\Yii::$app->params['dashboardEngine']) && \Yii::$app->params['dashboardEngine'] == WidgetAbstract::ENGINE_ROWS){
+            $this->css = ['less/tag_fullsize.less'];
         }
 
-
+        if(!empty($moduleL))
+        { $this->depends [] = 'open20\amos\layout\assets\BaseAsset'; }
+        else
+        { $this->depends [] = 'open20\amos\core\views\assets\AmosCoreAsset'; }
         parent::init();
     }
 }
