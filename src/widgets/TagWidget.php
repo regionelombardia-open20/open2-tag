@@ -19,6 +19,7 @@ use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\db\Query;
 use yii\widgets\InputWidget;
+use open20\amos\admin\AmosAdmin;
 
 /**
  * Class TagWidget
@@ -47,7 +48,8 @@ class TagWidget extends InputWidget
         $hideHeader = false,
         $moduleCwh,
         $scope,
-        $selectSonsOnly;
+        $selectSonsOnly,
+        $isFrontend = false;
     private static
         $allRoles;
 
@@ -85,6 +87,7 @@ class TagWidget extends InputWidget
     public function run()
     {
         $tagsSelected = $this->form_values ? $this->getTagsSelectedFromFormValues() : $this->getTagsSelected();
+        $hideHeaderInternal = (isset(\Yii::$app->params['hideTagWidgetHeader']) ? \Yii::$app->params['hideTagWidgetHeader'] : $this->hideHeader);
 
         return $this->render(
             'tag',
@@ -96,12 +99,13 @@ class TagWidget extends InputWidget
                 'is_search' => $this->isSearch,
                 'tags_selected' => $tagsSelected,
                 'limit_trees' => $this->getLimitTrees(),
-                'hideHeader' => $this->hideHeader,
+                'hideHeader' => $hideHeaderInternal,
                 'id' => $this->id,
                 'containerClass' => $this->containerClass,
                 'moduleCwh' => $this->moduleCwh,
                 'scope' => $this->scope,
-                'selectSonsOnly' => $this->selectSonsOnly
+                'selectSonsOnly' => $this->selectSonsOnly,
+                'isFrontend' => $this->isFrontend,
             ]
         );
     }
@@ -138,7 +142,7 @@ class TagWidget extends InputWidget
     private function getAllRoles()
     {
         if (is_null(static::$allRoles)) {
-            if (Yii::$app->getModule('admin')->modelMap['UserProfile'] == get_class($this->model)) {
+            if (Yii::$app->getModule(AmosAdmin::getModuleName())->modelMap['UserProfile'] == get_class($this->model)) {
                 $id = $this->model['user_id'];
             } else {
                 $id = \Yii::$app->getUser()->getId();

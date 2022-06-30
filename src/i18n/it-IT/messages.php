@@ -26,6 +26,7 @@ return [
     'Creato il' => 'Creato il',
     'Descrizione' => 'Descrizione',
     'Disabled' => 'Disabilitato',
+    '#error_delete_entity_tags_mm' => 'Errore durante la cancellazione dei tag dalla radice',
     'E\' necessario scegliere almeno 1 tag' => 'E\' necessario scegliere almeno 1 tag',
     'Elenco dei widgets del plugin Tag' => 'Elenco dei widgets del plugin Tag',
     'Frequency' => 'Frequenza',
@@ -70,5 +71,6 @@ return [
     '#tags_title_tree' => 'Tag Aree di Interesse',
     '#tags_label_tree' => 'Tag Aree di Interesse',
     'Selezionare almeno 1 tag per ogni albero.' => 'Selezionare almeno 1 tag per ogni albero.',
-    '#widget_title_tag' => 'Tag'
+    '#widget_title_tag' => 'Tag',
+    '#menu_front_tags' => 'Tag',
 ];

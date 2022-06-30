@@ -24,7 +24,13 @@ use open20\amos\tag\AmosTag;
  * @var string $id
  */
 
-\open20\amos\tag\assets\ModuleTagFormAsset::register($this);
+if ($isFrontend == false) {
+    \open20\amos\tag\assets\ModuleTagFormAsset::register($this);
+} else {
+    \open20\amos\tag\assets\ModuleTagFormFrontendAsset::register($this);
+}
+
+
 
 $errorBlockMessage = AmosTag::t('amostag', 'Selezionare almeno 1 tag.');
 $errorTooltipTitle = AmosTag::t('amostag', 'E\' necessario scegliere almeno 1 tag');
@@ -85,6 +91,7 @@ JS
     
     <?php
     $data_trees = [];
+
     foreach ($trees as $tree) {
         //dati dell'albero
         $id_tree = $tree['id'];

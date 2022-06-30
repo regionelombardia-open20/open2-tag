@@ -22,7 +22,7 @@ use Yii;
  * @package open20\amos\tag
  */
 class AmosTag extends AmosModule
-{
+{ 
     public $controllerNamespace = 'open20\amos\tag\controllers';
 
     /**
@@ -117,12 +117,30 @@ class AmosTag extends AmosModule
     /**
      * @inheritdoc
      */
-    protected function getDefaultModels()
+    protected function getDefaultModels() 
     {
         return [
             'EntitysTagsMm' => __NAMESPACE__ . '\\' . 'models\EntitysTagsMm',
             'Tag' => __NAMESPACE__ . '\\' . 'models\Tag',
             'TagModelsAuthItemsMm' => __NAMESPACE__ . '\\' . 'models\TagModelsAuthItemsMm',
         ];
+    }
+    
+    /**
+     *
+     * @return string
+     */
+    public function getFrontEndMenu($dept = 1)
+    {
+        $menu = "";
+        $app  = \Yii::$app;
+        if (!$app->user->isGuest) {
+            if (Yii::$app->user->can('AMMINISTRATORE_TAG')) {
+                $menu .= $this->addFrontEndMenu(AmosTag::t('amos' . AmosTag::getModuleName(),
+                        '#menu_front_tags'),
+                    AmosTag::toUrlModule('/manager'), $dept);
+            }
+        }
+        return $menu;
     }
 }

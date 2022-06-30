@@ -26,6 +26,7 @@ return [
     'Creato il' => 'Created at',
     'Descrizione' => 'Description',
     'Disabled' => 'Disabled',
+    '#error_delete_entity_tags_mm' => 'Error while delete root tags',
     'E\' necessario scegliere almeno 1 tag' => 'Set at least one classification',
     'Elenco dei widgets del plugin Tag' => 'Widgets list',
     'Frequency' => 'Frequency',
@@ -71,4 +72,5 @@ return [
     '#tags_label_tree' => 'Tag Areas of Interest',
     'Selezionare almeno 1 tag per ogni albero.' => 'Set at least one classification for each tree',
     '#widget_title_tag' => 'Tag',
+    '#menu_front_tags' => 'Tag',
 ];

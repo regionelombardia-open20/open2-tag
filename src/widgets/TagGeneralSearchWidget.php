@@ -11,6 +11,7 @@
 
 namespace open20\amos\tag\widgets;
 
+use open20\amos\admin\AmosAdmin;
 use open20\amos\tag\models\EntitysTagsMm;
 use open20\amos\tag\models\Tag;
 use Yii;
@@ -44,6 +45,11 @@ class TagGeneralSearchWidget extends InputWidget
      * @var string $containerClass the class of the widget container div
      */
     public $containerClass = 'tag-widget';
+    
+    /**
+     * @var AmosAdmin $adminModule
+     */
+    protected $adminModule;
 
     /**
      * @throws \ReflectionException
@@ -51,6 +57,8 @@ class TagGeneralSearchWidget extends InputWidget
      */
     public function init()
     {
+        $this->adminModule = AmosAdmin::instance();
+        
         parent::init();
         if(!isset($this->form_values)){
             $post = Yii::$app->request->post($this->model->formName());
@@ -186,7 +194,7 @@ class TagGeneralSearchWidget extends InputWidget
      */
     private function getAllRoles()
     {
-        if (Yii::$app->getModule('admin')->modelMap['UserProfile'] == get_class($this->model)) {
+        if ($this->adminModule->model('UserProfile') == get_class($this->model)) {
             $keysRoles = array_keys(\Yii::$app->getAuthManager()->getRolesByUser($this->model['user_id']));
         } else {
             $keysRoles = array_keys(\Yii::$app->getAuthManager()->getRolesByUser(\Yii::$app->getUser()->getId()));

@@ -5,15 +5,20 @@
  * OPEN 2.0
  *
  *
- * @package    open20\amos\tag
+ * @package    open20\amos\tag\view\manager
  * @category   CategoryName
  */
 
+use open20\amos\admin\AmosAdmin;
 use open20\amos\tag\AmosTag;
 
 /** @var \yii\web\View $this */
 /** @var \kartik\form\ActiveForm $form */
 /** @var \open20\amos\tag\models\Tag $node */
+
+/** @var AmosAdmin $adminModule */
+$adminModule = AmosAdmin::instance();
+$userProfileClassname = $adminModule->model('UserProfile');
 
 if ($node->isRoot()):
     $moduliTaggabili = [];
@@ -74,8 +79,8 @@ if ($node->isRoot()):
             <div class="checkbox">
                 <?php
                 echo \kartik\select2\Select2::widget([
-                    'name' => 'CwhTagInterestMm[' . Yii::$app->getModule('admin')->modelMap['UserProfile'] . ']',
-                    'value' => $node->getAssignedInterestByClassname(Yii::$app->getModule('admin')->modelMap['UserProfile']),
+                    'name' => 'CwhTagInterestMm[' . $userProfileClassname . ']',
+                    'value' => $node->getAssignedInterestByClassname($userProfileClassname),
                     'data' => $ruoliDaScegliere,
                     'options' => ['placeholder' => AmosTag::t('amostag','Seleziona un ruolo...'), 'multiple' => true],
                     'pluginOptions' => [
