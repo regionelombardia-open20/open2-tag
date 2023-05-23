@@ -11,7 +11,11 @@
 
 namespace open20\amos\tag\models\base;
 
+use open20\amos\admin\models\UserProfile;
+use open20\amos\cwh\models\CwhTagInterestMm;
 use open20\amos\tag\AmosTag;
+use open20\amos\tag\models\EntitysTagsMm;
+use open20\amos\tag\models\TagModelsAuthItemsMm;
 use kartik\tree\models\Tree;
 
 /**
@@ -24,14 +28,14 @@ use kartik\tree\models\Tree;
  * @property integer $lft
  * @property integer $rgt
  * @property integer $lvl
- * @property string $nome
- * @property string $nome_en
- * @property string $codice
- * @property string $codice_en
- * @property string $descrizione
- * @property string $descrizione_en
+ * @property string  $nome
+ * @property string  $nome_en
+ * @property string  $codice
+ * @property string  $codice_en
+ * @property string  $descrizione
+ * @property string  $descrizione_en
  * @property integer $limit_selected_tag
- * @property string $icon
+ * @property string  $icon
  * @property integer $icon_type
  * @property integer $active
  * @property integer $selected
@@ -46,9 +50,9 @@ use kartik\tree\models\Tree;
  * @property integer $removable
  * @property integer $removable_all
  * @property integer $frequency
- * @property string $created_at
- * @property string $updated_at
- * @property string $deleted_at
+ * @property string  $created_at
+ * @property string  $updated_at
+ * @property string  $deleted_at
  * @property integer $created_by
  * @property integer $updated_by
  * @property integer $deleted_by
@@ -154,8 +158,11 @@ class BaseTag extends Tree
      */
     public function getUserProfiles()
     {
-        return $this->hasMany(\open20\amos\admin\models\UserProfile::className(),
-            ['id' => 'user_profile_id'])->viaTable('user_profile_tag_mm', ['tag_id' => 'id']);
+        return $this->hasMany(
+            UserProfile::class,
+            ['id' => 'user_profile_id']
+        )
+        ->viaTable('user_profile_tag_mm', ['tag_id' => 'id']);
     }
 
     /**
@@ -163,8 +170,11 @@ class BaseTag extends Tree
      */
     public function getTagModelsAuthItems()
     {
-        return $this->hasMany(\open20\amos\tag\models\TagModelsAuthItemsMm::className(),
-            ['tag_id' => 'id'])->inverseOf('tag');
+        return $this->hasMany(
+            TagModelsAuthItemsMm::class,
+            ['tag_id' => 'id']
+        )
+        ->inverseOf('tag');
     }
 
     /**
@@ -174,9 +184,13 @@ class BaseTag extends Tree
     {
         $moduleCwh = \Yii::$app->getModule('cwh');
         if (isset($moduleCwh)) {
-            return $this->hasMany(\open20\amos\cwh\models\CwhTagInterestMm::className(),
-                ['tag_id' => 'id'])->inverseOf('tag');
+            return $this->hasMany(
+                CwhTagInterestMm::class,
+                ['tag_id' => 'id']
+            )
+            ->inverseOf('tag');
         }
+
         return null;
     }
 
@@ -185,6 +199,37 @@ class BaseTag extends Tree
      */
     public function getEntitysTagsMms()
     {
-        return $this->hasMany(\open20\amos\tag\models\EntitysTagsMm::className(), ['tag_id' => 'id']);
+        return $this->hasMany(
+            EntitysTagsMm::class,
+            ['tag_id' => 'id']
+        );
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCwhConfig()
+    {
+        $moduleCwh = \Yii::$app->getModule('cwh');
+        if($moduleCwh) 
+        {
+            return $this->hasOne(\open20\amos\cwh\models\CwhConfig::className(), ['id' => 'cwh_config_id']);
+        }
+        return null;
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getNetwork()
+    {
+        $network = null;
+        
+        $config = $this->cwhConfig;
+        if(!is_null($config))
+        {
+            $network = $this->hasOne($config->classname, ['id' => 'network_record_id']);
+        }
+        return $network;
     }
 }

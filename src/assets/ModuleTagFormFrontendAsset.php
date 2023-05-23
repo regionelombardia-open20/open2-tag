@@ -11,25 +11,32 @@
 
 namespace open20\amos\tag\assets;
 
-use open20\amos\core\widget\WidgetAbstract;
 use yii\web\AssetBundle;
 
+/**
+ * 
+ */
 class ModuleTagFormFrontendAsset extends AssetBundle
 {
+    /**
+     * 
+     * @var type
+     */
     public $sourcePath = '@vendor/open20/amos-tag/src/assets/web';
-
     
+    /**
+     * 
+     * @var type
+     */
     public $js = [
-        'js/tag-form.js', 
-    ]; 
+        'js/tag-form.js',
+    ];
+
+    /**
+     * 
+     * @var type
+     */
     public $depends = [
     ];
-
-    /*
-    //force reset cache asset (devel ONLY)
-    public $publishOptions = [
-        'forceCopy'=>true,
-    ];
-    */
 
 }

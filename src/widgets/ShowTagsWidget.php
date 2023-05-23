@@ -46,27 +46,32 @@ class ShowTagsWidget extends Widget
     public function init()
     {
         parent::init();
-        if($this->rootId){
+        if ($this->rootId) {
             $this->rootIdsArray[] = $this->rootId;
         }
-        if(empty($this->rootIdsArray)){
-            $this->rootIdsArray = TagModelsAuthItemsMm::find()->andWhere(['classname' => get_class($this->model)])->groupBy('tag_id')->addSelect('tag_id')->column();
+
+        if (empty($this->rootIdsArray)) {
+            $this->rootIdsArray = TagModelsAuthItemsMm::find()
+                ->andWhere(['classname' => get_class($this->model)])
+                ->groupBy('tag_id')
+                ->addSelect('tag_id')
+                ->column();
         }
     }
-
 
     /**
      * @inheritdoc
      */
     public function run()
     {
-
-        if(!count($this->rootIdsArray)){
+        if (!count($this->rootIdsArray)) {
             return AmosTag::t('amostag', '#no_tree_enabled');
         }
+
         if(!empty( $this->model->getTagValues())) {
             $tagValues = explode(',', $this->model->getTagValues());
         }
+
         foreach ($this->rootIdsArray as $rootId) {
             $root = Tag::findOne($rootId);
             if(isset($tagValues)) {
@@ -78,11 +83,14 @@ class ShowTagsWidget extends Widget
             } else {
                 $tags = [];
             }
-            echo $this->render('show-tags-widget', ['root' => $root, 'tags' => $tags]);
+
+            echo $this->render('show-tags-widget', [
+                'root' => $root,
+                'tags' => $tags
+            ]);
         }
+
         return null;
-
     }
-
 
 }

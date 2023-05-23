@@ -12,7 +12,6 @@
 namespace open20\amos\tag\widgets;
 
 use open20\amos\admin\AmosAdmin;
-use open20\amos\tag\models\EntitysTagsMm;
 use open20\amos\tag\models\Tag;
 use Yii;
 use yii\db\ActiveQuery;
@@ -28,12 +27,46 @@ use yii\widgets\InputWidget;
  */
 class TagGeneralSearchWidget extends InputWidget
 {
+    /**
+     * 
+     * @var type
+     */
     public $form;
+
+    /**
+     * 
+     * @var type
+     */
     public $name = 'tagValues';
+
+    /**
+     * 
+     * @var type
+     */
     public $trees = [];
+
+    /**
+     * 
+     * @var type
+     */
     public $singleFixedTreeId;
+
+    /**
+     * 
+     * @var type
+     */
     public $form_values;
+
+    /**
+     * 
+     * @var type
+     */
     public $isSearch = false;
+
+    /**
+     * 
+     * @var type
+     */
     public $hideHeader = false;
 
     /**
@@ -45,7 +78,7 @@ class TagGeneralSearchWidget extends InputWidget
      * @var string $containerClass the class of the widget container div
      */
     public $containerClass = 'tag-widget';
-    
+
     /**
      * @var AmosAdmin $adminModule
      */
@@ -58,18 +91,17 @@ class TagGeneralSearchWidget extends InputWidget
     public function init()
     {
         $this->adminModule = AmosAdmin::instance();
-        
+
         parent::init();
-        if(!isset($this->form_values)){
+        if (!isset($this->form_values)) {
             $post = Yii::$app->request->post($this->model->formName());
-            if(!empty($post) && key_exists($this->name, $post)){
+            if (!empty($post) && key_exists($this->name, $post)) {
                 $this->form_values = $post[$this->name];
             }
         }
+
         $this->trees = $this->fetchAllTrees();
-
     }
-
 
     /**
      * @return array|ActiveRecord[]
@@ -78,15 +110,19 @@ class TagGeneralSearchWidget extends InputWidget
     private function fetchAllTrees()
     {
         /** @var ActiveQuery $query */
+        $roles = array_keys(
+            \Yii::$app->authManager->getRolesByUser(
+                \Yii::$app->getUser()->getId()
+            )
+        );
+        
         $query = Tag::find()
             ->joinWith('tagModelsAuthItems')
             ->andWhere(['lvl' => 0])
-            ->andWhere([
-                'auth_item' => array_keys(\Yii::$app->authManager->getRolesByUser(\Yii::$app->getUser()->getId()))
-            ]);
+            ->andWhere(['auth_item' => $roles]);
 
-        if (!empty($this->singleFixedTreeId)){
-            $query->andWhere(["tag.id" => $this->singleFixedTreeId ]);
+        if (!empty($this->singleFixedTreeId)) {
+            $query->andWhere(["tag.id" => $this->singleFixedTreeId]);
         }
 
         $query->orderBy(['tag.nome' => SORT_DESC]);
@@ -94,15 +130,16 @@ class TagGeneralSearchWidget extends InputWidget
         return $query->all();
     }
 
-
-
     /**
      * @inheritdoc
      */
     public function run()
     {
 
-        $tagsSelected = ($this->form_values ? $this->getTagsSelectedFromFormValues() : []);
+        $tagsSelected = $this->form_values
+            ? $this->getTagsSelectedFromFormValues()
+            : [];
+
         return $this->render('tag_search_general', [
             'model' => $this->model,
             'form' => $this->form,
@@ -116,7 +153,6 @@ class TagGeneralSearchWidget extends InputWidget
         ]);
     }
 
-
     /**
      * @return array
      */
@@ -126,23 +162,28 @@ class TagGeneralSearchWidget extends InputWidget
         if (isset($this->form_values)) {
             foreach ($this->form_values as $treeId => $treeSelectedTags) {
                 $selectedTagIds = explode(',', $treeSelectedTags);
-                if ($treeSelectedTags && !array_key_exists("tree_" . $treeId, $ret)) {
-                    $ret["tree_" . $treeId] = [];
+                if (
+                    $treeSelectedTags
+                    && !array_key_exists("tree_" . $treeId, $ret)
+                ) {
+                    $ret['tree_' . $treeId] = [];
                 }
                 foreach ($selectedTagIds as $tagId) {
                     if (!empty($tagId)) {
                         $tagObj = $this->getTagById($tagId);
                         if (!is_null($tagObj)) {
-                            if($treeId == $tagObj->root) {
-                                if (!array_key_exists("tree_" . $treeId, $ret)) {
-                                    $ret["tree_" . $treeId] = [];
+                            if ($treeId == $tagObj->root) {
+                                if (!array_key_exists('tree_' . $treeId, $ret)) {
+                                    $ret['tree_' . $treeId] = [];
                                 }
+
                                 $element = [
-                                    "id" => $tagObj->id,
-                                    "label" => $tagObj->nome
+                                    'id' => $tagObj->id,
+                                    'label' => $tagObj->nome
                                 ];
-                                if(!in_array($element, $ret["tree_" . $treeId])){
-                                    $ret["tree_" . $treeId][] = $element;
+
+                                if (!in_array($element, $ret['tree_' . $treeId])) {
+                                    $ret['tree_' . $treeId][] = $element;
                                 }
                             }
                         }
@@ -150,6 +191,7 @@ class TagGeneralSearchWidget extends InputWidget
                 }
             }
         }
+
         return $ret;
     }
 
@@ -173,17 +215,20 @@ class TagGeneralSearchWidget extends InputWidget
             //limite di default: nessun limite
             $limit_tree = false;
 
-            if(!$this->isSearch) {
+            if (!$this->isSearch) {
                 //carica il nodo radice
                 $root_node = $this->getTagById($tree['id']);
 
                 //se è presente un limite impostato per questa radice allora lo usa
-                if ($root_node->limit_selected_tag && is_numeric($root_node->limit_selected_tag)) {
+                if (
+                    $root_node->limit_selected_tag
+                    && is_numeric($root_node->limit_selected_tag)
+                ) {
                     $limit_tree = $root_node->limit_selected_tag;
                 }
             }
 
-            $array_limit_trees["tree_" . $tree['id']] = $limit_tree;
+            $array_limit_trees['tree_' . $tree['id']] = $limit_tree;
         }
 
         return $array_limit_trees;
@@ -195,30 +240,51 @@ class TagGeneralSearchWidget extends InputWidget
     private function getAllRoles()
     {
         if ($this->adminModule->model('UserProfile') == get_class($this->model)) {
-            $keysRoles = array_keys(\Yii::$app->getAuthManager()->getRolesByUser($this->model['user_id']));
+            $keysRoles = array_keys(
+                \Yii::$app->getAuthManager()->getRolesByUser(
+                    $this->model['user_id']
+                )
+            );
         } else {
-            $keysRoles = array_keys(\Yii::$app->getAuthManager()->getRolesByUser(\Yii::$app->getUser()->getId()));
+            $keysRoles = array_keys(
+                \Yii::$app->getAuthManager()->getRolesByUser(
+                    \Yii::$app->getUser()->getId()
+                )
+            );
         }
 
         // i want all roles that user has
         $allRoles = [];
         foreach ($keysRoles as $role) {
-            $allRoles = array_unique(array_merge($allRoles,
-                array_keys(\Yii::$app->getAuthManager()->getChildRoles($role))));
+            $allRoles = array_unique(
+                array_merge(
+                    $allRoles,
+                    array_keys(
+                        \Yii::$app->getAuthManager()->getChildRoles($role)
+                    )
+                )
+            );
         }
 
         return $allRoles;
     }
-
 
     /**
      * @return ActiveRecord[] tutte le root
      */
     private function fetchRoles()
     {
-        /**@var ActiveQuery $query * */
-        $query = Tag::find()->joinWith('tagAuthItemsMms')->andWhere(['auth_item' => array_keys(\Yii::$app->authManager->getRolesByUser(\Yii::$app->getUser()->getId()))]);
+        $roles = array_keys(
+            \Yii::$app->authManager->getRolesByUser(
+                \Yii::$app->getUser()->getId()
+            )
+        );
+
+        $query = Tag::find()
+            ->joinWith('tagAuthItemsMms')
+            ->andWhere(['auth_item' => $roles]);
 
         return $query->all();
     }
+
 }

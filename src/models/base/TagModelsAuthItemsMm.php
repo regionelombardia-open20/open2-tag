@@ -12,10 +12,9 @@
 namespace open20\amos\tag\models\base;
 
 use open20\amos\core\record\AmosRecordAudit;
+use open20\amos\tag\AmosTag;
 use open20\amos\tag\models\Tag;
 use mdm\admin\models\AuthItem;
-use Yii;
-use open20\amos\tag\AmosTag;
 
 /**
  * This is the base-model class for table "tag_models_auth_items_mm".
@@ -29,6 +28,7 @@ use open20\amos\tag\AmosTag;
  */
 class TagModelsAuthItemsMm extends AmosRecordAudit
 {
+
     /**
      * @inheritdoc
      */
@@ -66,7 +66,11 @@ class TagModelsAuthItemsMm extends AmosRecordAudit
      */
     public function getTag()
     {
-        return $this->hasOne(Tag::className(), ['id' => 'tag_id'])->inverseOf('tagModelsAuthItemsMms');
+        return $this->hasOne(
+            Tag::class,
+            ['id' => 'tag_id']
+        )
+        ->inverseOf('tagModelsAuthItemsMms');
     }
 
     /**
@@ -74,6 +78,11 @@ class TagModelsAuthItemsMm extends AmosRecordAudit
      */
     public function getAuthItem()
     {
-        return $this->hasOne(AuthItem::className(), ['name' => 'auth_item'])->inverseOf('tagModelsAuthItemsMms');
+        return $this->hasOne(
+            AuthItem::class,
+            ['name' => 'auth_item']
+        )
+        ->inverseOf('tagModelsAuthItemsMms');
     }
+
 }

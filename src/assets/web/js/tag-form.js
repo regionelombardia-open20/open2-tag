@@ -12,16 +12,31 @@ $(document).ready(function() {
                 //avoid send malformed string as selected nodes on submit - eg. string will be directly used in search query
                 $('body').on('submit', 'form', function (e) {
                     var values = $("#tree_obj_"+id_tree).val();
-                    
-                    if (values) {
-                        if(values.charAt(0)== ','){
-                            values = values.substr(1);
+                    if(values){
+                        if(values.length){
+                            if(values.charAt(0)== ','){
+                                values = values.substr(1);
+                            }
+                            if(values.charAt(values.length-1)== ','){
+                                values = values.substr(0, values.length-1);
+                            }
+                            $("#tree_obj_"+id_tree).val(values);
                         }
-                        if(values.charAt(values.length-1)== ','){
-                            values = values.substr(0, values.length-1);
+                    }else{
+                        var values = $("#tree_simple_"+id_tree).val();
+                        if(values){
+                           if(values.length){
+                            if(values.charAt(0)== ','){
+                                values = values.substr(1);
+                            }
+                            if(values.charAt(values.length-1)== ','){
+                                values = values.substr(0, values.length-1);
+                            }
+                            $("#tree_simple_"+id_tree).val(values);
+                        } 
                         }
-                        $("#tree_obj_"+id_tree).val(values);
                     }
+                    
                 });// end check on submit
             });
             onlyLeavesSelectable(TagFormVar.selectSonsOnly);

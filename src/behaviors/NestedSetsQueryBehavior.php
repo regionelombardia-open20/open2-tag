@@ -11,8 +11,10 @@
 
 namespace open20\amos\tag\behaviors;
 
-
-class NestedSetsQueryBehavior extends \creocoder\nestedsets\NestedSetsQueryBehavior
+/**
+ * 
+ */
+class NestedSetsQueryBehavior
+    extends \creocoder\nestedsets\NestedSetsQueryBehavior
 {
-
 }

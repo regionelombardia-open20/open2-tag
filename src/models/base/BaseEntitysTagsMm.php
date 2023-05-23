@@ -13,18 +13,19 @@ namespace open20\amos\tag\models\base;
 
 use open20\amos\core\record\Record;
 use open20\amos\tag\AmosTag;
+use open20\amos\tag\models\Tag;
 
 /**
  * This is the base-model class for table "tag".
  *
  * @property integer $entitys_tags_mm_id
- * @property string $classname
+ * @property string  $classname
  * @property integer $record_id
  * @property integer $tag_id
  * @property integer $root_id
- * @property string $created_at
- * @property string $updated_at
- * @property string $deleted_at
+ * @property string  $created_at
+ * @property string  $updated_at
+ * @property string  $deleted_at
  * @property integer $created_by
  * @property integer $updated_by
  * @property integer $deleted_by
@@ -34,6 +35,7 @@ use open20\amos\tag\AmosTag;
  */
 class BaseEntitysTagsMm extends Record
 {
+
     /**
      * @inheritdoc
      */
@@ -78,6 +80,10 @@ class BaseEntitysTagsMm extends Record
      */
     public function getTag()
     {
-        return $this->hasOne(\open20\amos\tag\models\Tag::className(), ['id' => 'tag_id']);
+        return $this->hasOne(
+            Tag::class,
+            ['id' => 'tag_id']
+        );
     }
+
 }

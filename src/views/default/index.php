@@ -13,23 +13,18 @@
 /** @var \yii\web\View $this * */
 
 use open20\amos\core\icons\AmosIcons;
-use open20\amos\layout\assets\BaseAsset;
-use open20\amos\dashboard\AmosDashboard;
 use open20\amos\dashboard\assets\ModuleDashboardAsset;
-use yii\helpers\Html;
-use yii\web\JsExpression;
+use open20\amos\layout\assets\BaseAsset;
 use open20\amos\tag\AmosTag;
+use yii\helpers\Html;
+use yii\helpers\Url;
 
 BaseAsset::register($this);
-
 ModuleDashboardAsset::register($this);
-
 AmosIcons::map($this);
 
 $this->title = $this->context->module->name;
-
 $this->params['breadcrumbs'][] = ['label' => $this->title];
-
 ?>
 
 <div class="container">
@@ -40,19 +35,24 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
     //DA SOSTITUIRE
     ?>
     <div id="dashboard-edit-toolbar" class="hidden">
-        <?=
-        Html::a(AmosTag::t('amostag', 'Salva'), 'javascript:void(0);', [
+    <?= Html::a(
+        AmosTag::t('amostag', 'Salva'),
+        'javascript:void(0);',
+        [
             'id' => 'dashboard-save-button',
             'class' => 'btn btn-success bk-saveOrder',
-        ]);
-        ?>
+        ]
+    );
+    ?>
 
-        <?=
-        Html::a(AmosTag::t('amostag', 'Annulla'), \yii\helpers\Url::current(), [
+    <?= Html::a(
+        AmosTag::t('amostag', 'Annulla'),
+        Url::current(),
+        [
             'class' => 'btn btn-danger bk-saveDelete',
-        ]);
-        ?>
-
+        ]
+    );
+    ?>
     </div>
 
     <?php
@@ -61,11 +61,8 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
      * @$widgetsGrafich elenco dei plugin ad grafici
      * @$dashboardsNumber numero delle dashboard da mostrare
      */
-
     ?>
-
     <nav data-dashboard-index="<?= $currentDashboard->slide ?>">
-
         <div class="row actions-dashboard-container">
             <ul id="widgets-icon" class="bk-sortableIcon plugin-list"
                 role="menu">
@@ -88,6 +85,5 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                 ?>
             </ul>
         </div>
-
     </nav>
 </div>

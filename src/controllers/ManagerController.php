@@ -16,8 +16,8 @@ use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 
-class ManagerController extends Controller
-{
+class ManagerController extends Controller {
+
     /**
      * @var string $layout
      */
@@ -27,45 +27,53 @@ class ManagerController extends Controller
      * @inheritdoc
      */
     public function init() {
-
         parent::init();
+
         $this->setUpLayout();
-        // custom initialization code goes here
     }
 
     /**
      * @inheritdoc
      */
-    public function behaviors()
-    {
-        $behaviors = ArrayHelper::merge(parent::behaviors(), [
-            'access' => [
-                'class' => AccessControl::className(),
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'actions' => [
-                            'index'
-                        ],
-                        'roles' => ['AMMINISTRATORE_TAG']
-                    ]
-                ]
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['post', 'get']
-                ]
-            ]
-        ]);
+    public function behaviors() {
+        $behaviors = ArrayHelper::merge(
+                        parent::behaviors(),
+                        [
+                            'access' => [
+                                'class' => AccessControl::class,
+                                'rules' => [
+                                    [
+                                        'allow' => true,
+                                        'actions' => [
+                                            'index'
+                                        ],
+                                        'roles' => ['AMMINISTRATORE_TAG']
+                                    ],
+                                    [
+                                        'allow' => true,
+                                        'actions' => [
+                                            'autocomplete-free-tag'
+                                        ],
+                                        'roles' => ['BASIC_USER', 'ADMIN', 'AMMINISTRATORE_TAG']
+                                    ]
+                                ]
+                            ],
+                            'verbs' => [
+                                'class' => VerbFilter::class,
+                                'actions' => [
+                                    'delete' => ['post', 'get']
+                                ]
+                            ]
+                        ]
+        );
+
         return $behaviors;
     }
 
     /**
      * @return mixed
      */
-    public function actionIndex()
-    {
+    public function actionIndex() {
         $this->setUpLayout("form");
         return $this->render('index');
     }
@@ -74,17 +82,38 @@ class ManagerController extends Controller
      * @param null $layout
      * @return bool
      */
-    public function setUpLayout($layout = null){
-        if ($layout === false){
+    public function setUpLayout($layout = null) {
+        if ($layout === false) {
             $this->layout = false;
             return true;
         }
+
         $module = \Yii::$app->getModule('layout');
-        if(empty($module)){
-            $this->layout =  '@vendor/open20/amos-core/views/layouts/' . (!empty($layout) ? $layout : $this->layout);
+        if (empty($module)) {
+            $this->layout = '@vendor/open20/amos-core/views/layouts/'
+                    . (!empty($layout) ? $layout : $this->layout);
             return true;
         }
+
         $this->layout = (!empty($layout)) ? $layout : $this->layout;
         return true;
     }
+
+    public function actionAutocompleteFreeTag($id = null) {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $out = [];
+        $term = filter_input(INPUT_GET, 'term');
+        if (!empty($term)) {
+            $data = \open20\amos\tag\models\TagFree::find()
+                    ->andWhere(['like', 'tag', $term])
+                    ->select('tag')
+                    ->limit(60)
+                    ->column();
+
+            return $data;
+        }
+
+        return $out;
+    }
+
 }

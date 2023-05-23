@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Aria S.p.A.
  * OPEN 2.0
@@ -13,13 +14,17 @@ namespace open20\amos\tag\models\search;
 use open20\amos\tag\behaviors\NestedSetsQueryBehavior;
 use yii\db\ActiveQuery;
 
-
-class TagQuery extends ActiveQuery 
+/**
+ * 
+ */
+class TagQuery extends ActiveQuery
 {
+
     public function behaviors()
     {
         return [
-            NestedSetsQueryBehavior::className(),
+            NestedSetsQueryBehavior::class,
         ];
     }
+
 }

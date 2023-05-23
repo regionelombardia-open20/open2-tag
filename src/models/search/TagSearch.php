@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Aria S.p.A.
  * OPEN 2.0
@@ -16,21 +17,33 @@ use open20\amos\tag\models\Tag;
 use Yii;
 use yii\data\ActiveDataProvider;
 
-
+/**
+ * 
+ */
 class TagSearch extends Tag implements CmsModelInterface
 {
-    
-    public function cmsIsVisible($id) 
+    /**
+     * 
+     * @param type $id
+     * @return boolean
+     */
+    public function cmsIsVisible($id)
     {
         $retValue = true;
         return $retValue;
     }
 
+    /**
+     * 
+     * @param type $params
+     * @param type $limit
+     * @return type
+     */
     public function cmsSearch($params, $limit)
     {
         $params = array_merge($params, Yii::$app->request->get());
         $this->load($params);
-        $dataProvider  = $this->search($params);
+        $dataProvider = $this->search($params);
         $query = $dataProvider->query;
         if ($params["withPagination"]) {
             $dataProvider->setPagination(['pageSize' => $limit]);
@@ -38,16 +51,15 @@ class TagSearch extends Tag implements CmsModelInterface
         } else {
             $query->limit($limit);
         }
-        if (!empty($params["conditionSearch"])) 
-        {
+        
+        if (!empty($params["conditionSearch"])) {
             $commands = explode(";", $params["conditionSearch"]);
-            foreach ($commands as $command) 
-            {
-                $query->andWhere(eval("return ".$command.";"));
+            foreach ($commands as $command) {
+                $query->andWhere(eval("return " . $command . ";"));
             }
         }
 
- 	$query->orderBy('nome');
+        $query->orderBy('nome');
 
         return $dataProvider;
     }
@@ -56,14 +68,12 @@ class TagSearch extends Tag implements CmsModelInterface
      * 
      * @return array
      */
-    public function cmsSearchFields() 
+    public function cmsSearchFields()
     {
-        $searchFields = [];
-
-        array_push($searchFields, new CmsField("nome", "TEXT"));
-        array_push($searchFields, new CmsField("descrizione", "TEXT"));
-
-        return $searchFields;
+        return [
+            new CmsField('nome', 'TEXT'),
+            new CmsField('descrizione', 'TEXT')
+        ];
     }
 
     /**
@@ -77,8 +87,7 @@ class TagSearch extends Tag implements CmsModelInterface
             new CmsField('descrizione', 'TEXT', 'amostag', 'descrizione'),
         ];
     }
-    
-    
+
     /**
      * 
      * @param array $params
@@ -95,7 +104,7 @@ class TagSearch extends Tag implements CmsModelInterface
         if (!($this->load($params) && $this->validate())) {
             return $dataProvider;
         }
-        
+
         $query->andFilterWhere([
             'id' => $this->id,
             'root' => $this->root,
@@ -130,10 +139,11 @@ class TagSearch extends Tag implements CmsModelInterface
             ->andFilterWhere(['like', 'nome_en', $this->nome_en])
             ->andFilterWhere(['like', 'codice', $this->codice])
             ->andFilterWhere(['like', 'codice_en', $this->codice_en])
-                ->andFilterWhere(['like', 'descrizione', $this->descrizione])
-                ->andFilterWhere(['like', 'descrizione_en', $this->descrizione_en])
-                ->andFilterWhere(['like', 'icon', $this->icon]);
+            ->andFilterWhere(['like', 'descrizione', $this->descrizione])
+            ->andFilterWhere(['like', 'descrizione_en', $this->descrizione_en])
+            ->andFilterWhere(['like', 'icon', $this->icon]);
 
         return $dataProvider;
     }
+
 }

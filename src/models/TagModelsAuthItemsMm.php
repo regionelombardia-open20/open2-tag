@@ -20,5 +20,4 @@ use open20\amos\tag\models\base\TagModelsAuthItemsMm as TagModelsAuthItemsMmBase
 class TagModelsAuthItemsMm extends TagModelsAuthItemsMmBase
 {
 
-
 }
