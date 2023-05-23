@@ -44,8 +44,8 @@ class TagFree extends \open20\amos\tag\models\base\TagFree {
         ]);
     }
 
-    public static function getEditFields() {
-        $labels = self::attributeLabels();
+    public function getEditFields() {
+        $labels = $this->attributeLabels();
 
         return [
             [

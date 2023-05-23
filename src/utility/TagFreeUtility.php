@@ -5,6 +5,7 @@ namespace open20\amos\tag\utility;
 use open20\amos\tag\models\TagFree;
 use open20\amos\tag\AmosTag;
 use open20\amos\tag\models\TagFreeModelMm;
+use Exception;
 
 /**
  * Description of TagFreeUtility
@@ -47,6 +48,8 @@ class TagFreeUtility {
             }
             return true;
         } catch (Exception $ex) {
+            \Yii::getLogger()->log('Errore: ' . $ex->getMessage() . ' - file: ' . $ex->getFile() . ' - linea: ' . $ex->getLine(), 
+                     \yii\log\Logger::LEVEL_ERROR);
             return false;
         }
     }
@@ -76,6 +79,8 @@ class TagFreeUtility {
             }
             return $tags;
         } catch (Exception $ex) {
+             \Yii::getLogger()->log('Errore: ' . $ex->getMessage() . ' - file: ' . $ex->getFile() . ' - linea: ' . $ex->getLine(), 
+                     \yii\log\Logger::LEVEL_ERROR);
             return '';
         }
     }

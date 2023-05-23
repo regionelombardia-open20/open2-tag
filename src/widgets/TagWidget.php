@@ -34,24 +34,26 @@ class TagWidget extends InputWidget
      */
     public $tagModule = null;
 
-    /**
-     * @var string $containerClass the class of the widget container div
-     */
-    public $containerClass = 'tag-widget';
     public
-        $id             = 'amos-tag', // @var string $id the id of the widget container div
-        $trees          = [],
+        $id = 'amos-tag', // @var string $id the id of the widget container div
+        $containerClass = 'tag-widget', // @var string $containerClass the class of the widget container div
+
         $form,
-        $name           = 'tagValues',
+        $name = 'tagValues',
+        $trees = [],
         $singleFixedTreeId,
         $form_values,
-        $isSearch       = false,
-        $hideHeader     = false,
+        $isSearch = false,
+        $hideHeader = false,
         $moduleCwh,
         $scope,
         $selectSonsOnly,
-        $isFrontend     = false;
-    private static $allRoles;
+        $isFrontend = false,
+        $enableAjax = false,
+        $responseAjax = false,
+        $treeOptions = [];
+    private static
+        $allRoles;
 
     /**
      * @throws \ReflectionException
@@ -62,7 +64,6 @@ class TagWidget extends InputWidget
         $this->tagModule = AmosTag::instance();
 
         parent::init();
-
         if (!isset($this->form_values)) {
             $post = Yii::$app->request->post($this->model->formName());
             if (!empty($post) && key_exists($this->name, $post)) {
@@ -78,18 +79,90 @@ class TagWidget extends InputWidget
         }
     }
 
+    public function registerAjax($uniqueId)
+    {
+
+        $this->view->registerJsVar("classnameContent_$uniqueId", get_class($this->model));
+        $this->view->registerJsVar("idContent_$uniqueId", $this->model->isNewRecord ? '' : $this->model->id);
+        $this->view->registerJsVar("isSearch_$uniqueId", $this->isSearch);
+        $this->view->registerJsVar("hideHeader_$uniqueId", $this->hideHeader);
+        $this->view->registerJsVar("selectSonsOnly_$uniqueId", $this->selectSonsOnly);
+        $this->view->registerJsVar("name_$uniqueId", $this->name);
+        $this->view->registerJsVar("containerClass_$uniqueId", $this->containerClass);
+        $errorBlockMessage = AmosTag::t('amostag', 'Selezionare almeno 1 tag.');
+        $errorTooltipTitle = AmosTag::t('amostag', 'E\' necessario scegliere almeno 1 tag');
+        $this->view->registerJsVar("optionsTrees_$uniqueId", \yii\helpers\Json::htmlEncode($this->treeOptions));
+        $this->view->registerJsVar("previousPost_$uniqueId", serialize(\Yii::$app->request->get()));
+        $js = <<<JS
+        var errorBlockMessage = "$errorBlockMessage";
+        var errorTooltipTitle = "$errorTooltipTitle";
+        $.ajax(
+            {
+        url: '/tag/tag-ajax/tag-widget',
+        type: 'get',
+        data: {
+            attribute: '$this->attribute',
+            classname: classnameContent_$uniqueId,
+            record_id: idContent_$uniqueId,
+            previousPost :previousPost_$uniqueId,
+            isSearch: isSearch_$uniqueId,
+            hideHeader: hideHeader_$uniqueId,
+            selectSonsOnly: selectSonsOnly_$uniqueId,
+            containerClass: containerClass_$uniqueId,
+            name: name_$uniqueId,
+        },
+        success: function (data) {
+                $('#$uniqueId').html(data);
+                $("#cwh-regola_pubblicazione").trigger('change');
+
+                // This will collapse all tag trees when page is ready
+                 $('input[id^="tree_obj_"]').treeview("collapseAll");
+            
+                // Show an error message at the bottom of the section title if in the page there is a "*-regola_pubblicazione"
+                // class with an error in it.
+                if($('div[class*="-regola_pubblicazione"]').hasClass('has-error')){
+                    $(".tag-plugin-block-error").append('<div style="margin-bottom: 10px;"><span class="tooltip-error-field"><span class="help-block help-block-error">'+errorBlockMessage+'</span></span></div>');
+                    $(".tag-plugin-warning-triangle").append('<span class="tooltip-error-field"> <span title="" data-toggle="tooltip" data-placement="top" data-original-title="'+errorTooltipTitle+'"><span class="am am-alert-triangle" style="color: #a02622"> </span> </span> </span>');
+                    $('div[class*="-regola_pubblicazione"]').hide();
+                }
+                if($('#amos-tag div').hasClass('has-error')){
+                    $(".tag-plugin-block-error").append('<div style="margin-bottom: 10px;"><span class="tooltip-error-field"><span class="help-block help-block-error">'+errorBlockMessage+'</span></span></div>');
+            
+                }
+                
+               if (typeof optionsTrees_$uniqueId != 'undefined') {
+                    var options = JSON.parse(optionsTrees_$uniqueId);
+                        options.forEach(function (TagFormVar, indexTree) {
+                            renderPreview(TagFormVar.data_trees.tags_selected, TagFormVar.data_trees.id, TagFormVar.data_trees.limit);
+                            onlyLeavesSelectable(TagFormVar.selectSonsOnly);
+                        });
+                }
+
+           // renderTagTree();
+            }
+        });
+JS;
+        $this->view->registerJs($js);
+
+    }
+
     /**
      * @inheritdoc
      */
     public function run()
     {
+        $html = '';
         $tagsSelected = $this->form_values ? $this->getTagsSelectedFromFormValues() : $this->getTagsSelected();
+        $hideHeaderInternal = (isset(\Yii::$app->params['hideTagWidgetHeader']) ? \Yii::$app->params['hideTagWidgetHeader'] : $this->hideHeader);
+        $this->hideHeader = $hideHeaderInternal;
 
-        $hideHeaderInternal = isset(\Yii::$app->params['hideTagWidgetHeader']) ? \Yii::$app->params['hideTagWidgetHeader']
-                : $this->hideHeader
-        ;
+        if ($this->enableAjax) {
+            $html.= $this->ajaxCall($tagsSelected);
+        }
 
-        return $this->render('tag',
+        if(!$this->enableAjax || ($this->responseAjax && $this->enableAjax)) {
+            $html = $this->render(
+                'tag',
                 [
                     'model' => $this->model,
                     'form' => $this->form,
@@ -105,8 +178,75 @@ class TagWidget extends InputWidget
                     'scope' => $this->scope,
                     'selectSonsOnly' => $this->selectSonsOnly,
                     'isFrontend' => $this->isFrontend,
-        ]);
+                    'enabledAjax' => $this->enableAjax
+                ]
+            );
+        }
+        return $html;
+
     }
+
+    public function ajaxCall($tagsSelected)
+    {
+        if ($this->responseAjax) {
+            $bundle = [];
+            foreach (\Yii::$app->controller->view->assetBundles as $name => $asset) {
+                if ($name != 'yii\bootstrap\BootstrapAsset') {
+                    $bundle[$name] = $asset;
+                }
+            }
+            \Yii::$app->controller->view->assetBundles = $bundle;
+        } else {
+            $uniqueId = uniqid();
+            \open20\amos\tag\assets\ModuleTagFormAjaxAsset::register($this->view);
+            \open20\amos\layout\assets\ThreeDotsAsset::register($this->view);
+            $js = $this->getTreeJs($this->getLimitTrees(), $tagsSelected);
+            $this->registerAjax($uniqueId);
+            return $js . "
+                <div id='$uniqueId' class='tag-section-ajax'>
+                    <div class='col-md-12'>
+                        <div class='loader-3dots'>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>";
+        }
+        return '';
+    }
+
+    /**
+     * @param $limit_trees
+     * @param $tags_selected
+     * @return string
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function getTreeJs($limit_trees, $tags_selected)
+    {
+        $data_trees = [];
+        $render = '';
+        foreach ($this->trees as $tree) {
+            //dati dell'albero
+            $data_tree = \open20\amos\tag\widgets\TagWidget::getDataTree($tree, $limit_trees, $tags_selected);
+
+            $options = [
+                'data_trees' => $data_tree,
+                'selectSonsOnly' => $this->selectSonsOnly,
+                'error_limit_tags' => AmosTag::t('amostag', 'Hai superato le scelte disponibili per questi descrittori.'),
+                'tags_unlimited' => AmosTag::t('amostag', 'illimitate'),
+                'no_tags_selected' => AmosTag::t('amostag', 'Nessun tag selezionato'),
+                'icon_remove_tag' => \open20\amos\core\icons\AmosIcons::show('close', [], 'am'),
+            ];
+            $data_trees[] = $options;
+//            pr($options);
+            $render .= $this->render('_tag_js', ['options' => $options]);
+
+        }
+        $this->treeOptions = $data_trees;
+        return $render;
+    }
+
 
     /**
      * @return array|ActiveRecord[]
@@ -285,7 +425,6 @@ class TagWidget extends InputWidget
                 }
             }
         }
-
         return $ret;
     }
 
@@ -343,4 +482,37 @@ class TagWidget extends InputWidget
                 ->andWhere(['auth_item' => $roles])
                 ->all();
     }
+
+    /**
+     * @param $trees
+     * @param $limit_trees
+     * @param $tags_selected
+     * @return array
+     */
+    public static function getDataTree($tree, $limit_trees, $tags_selected)
+    {
+
+        //dati dell'albero
+        $id_tree = $tree['id'];
+        $label_tree = $tree['nome'];
+        $limit_tree = ((array_key_exists('tree_' . $id_tree, $limit_trees) && $limit_trees['tree_' . $id_tree])
+            ? $limit_trees['tree_' . $id_tree]
+            : false
+        );
+
+        $tags_selected_tree = [];
+        if (array_key_exists('tree_' . $id_tree, $tags_selected) && !empty($tags_selected["tree_" . $id_tree])) {
+            $tags_selected_tree = $tags_selected["tree_" . $id_tree];
+        }
+
+        //inserisce i dati nell'array per gli eventi js
+        $data_tree = [
+            'id' => $id_tree,
+            'limit' => $limit_tree,
+            'label' => $label_tree,
+            'tags_selected' => $tags_selected_tree
+        ];
+        return $data_tree;
+    }
+
 }

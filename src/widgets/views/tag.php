@@ -28,24 +28,29 @@ use yii\web\View;
  * @var array $trees
  * @var array $limit_trees
  * @var bool $is_search
+ * @var bool $enabledAjax
+ * @var bool $isFrontend
  * @var array $tags_selected
  * @var bool $hideHeader
  * @var string $id
  */
 
-if ($isFrontend == false) {
-    ModuleTagFormAsset::register($this);
-} else {
-    ModuleTagFormFrontendAsset::register($this);
+if(!$enabledAjax) {
+    if ($isFrontend == false) {
+        ModuleTagFormAsset::register($this);
+    } else {
+        ModuleTagFormFrontendAsset::register($this);
+    }
 }
 
 $errorBlockMessage = AmosTag::t('amostag', 'Selezionare almeno 1 tag.');
 $errorTooltipTitle = AmosTag::t('amostag', 'E\' necessario scegliere almeno 1 tag');
 
-$this->registerJS(<<<JS
+if(!$enabledAjax) {
+    $this->registerJS(<<<JS
     var errorBlockMessage = "$errorBlockMessage";
     var errorTooltipTitle = "$errorTooltipTitle";
-    
+
     // This will collapse all tag trees when page is ready
     $(document).ready(function($) {
         if ($("input[id^=\"tree_obj_\"]").length) {
@@ -68,12 +73,13 @@ $this->registerJS(<<<JS
         $(".tag-plugin-block-error").append('<div style="margin-bottom: 10px;"><span class="tooltip-error-field"><span class="help-block help-block-error">'+errorBlockMessage+'</span></span></div>');
     }
 JS
-);
+    );
+}
 ?>
 
 <div id="<?= $id ?>" class="<?= $containerClass ?> body">
     <div class="intestazione-box">
-     <?php 
+     <?php
 	if(!empty($trees)) {
             if (!$hideHeader) {
                 if (!$is_search) {
@@ -111,31 +117,16 @@ JS
     <?php
     $data_trees = [];
 
-    foreach ($trees as $tree) :
+    foreach ($trees as $tree) {
         //dati dell'albero
-        $id_tree = $tree['id'];
-        $label_tree = $tree['nome'];
-        $limit_tree = ((array_key_exists('tree_' . $id_tree, $limit_trees)
-            && $limit_trees['tree_' . $id_tree])
-                ? $limit_trees['tree_' . $id_tree]
-                : false
-            );
-
-        $tags_selected_tree = [];
-        if (
-            array_key_exists('tree_' . $id_tree, $tags_selected)
-            && !empty($tags_selected["tree_" . $id_tree])
-        ) {
-            $tags_selected_tree = $tags_selected["tree_" . $id_tree];
-        }
-
-        // inserisce i dati nell'array per gli eventi js
-        $data_trees[] = [
-            'id' => $id_tree,
-            'limit' => $limit_tree,
-            'tags_selected' => $tags_selected_tree
-        ];
+        $data_tree = \open20\amos\tag\widgets\TagWidget::getDataTree($tree, $limit_trees, $tags_selected);
+        $data_trees[] = $data_tree;
+        $id_tree = $data_tree['id'];
+        $label_tree = $data_tree['label'];
+        $limit_tree = $data_tree['limit'];
+        $tags_selected_tree = $data_tree['tags_selected'];
         ?>
+
 
         <div class="amos-tag-tree-container row">
         <?php if (!$is_search) : ?>
@@ -157,6 +148,9 @@ JS
             if ($is_search) {
                 if (empty($tags_selected_tree)) {
                     $optionsTree['value'] = '';
+                }else{
+                    $ids = \yii\helpers\ArrayHelper::map($tags_selected_tree, 'id', 'id');
+                    $optionsTree['value'] = implode(',',$ids);
                 }
             } else {
                 if (!empty($tags_selected_tree)) {
@@ -189,7 +183,7 @@ JS
             <div id="preview_tag_tree_<?= $id_tree ?>" class="preview_tag_tree col-sm-12 col-md-4"></div>
             <div class="clearfix"></div>
         </div>
-    <?php endforeach; ?>
+    <?php } ?>
 
 </div>
 
@@ -203,10 +197,15 @@ $options = [
     'icon_remove_tag' => AmosIcons::show('close', [], 'am'),
 ];
 
-$this->registerJs(
-    "if (typeof TagFormVars === 'undefined' || TagFormVars === null) {
+
+/** @var $this \yii\web\View */
+if(!$enabledAjax) {
+    $this->registerJs(
+        "if (typeof TagFormVars === 'undefined' || TagFormVars === null) {
         TagFormVars = [];
     }
-    TagFormVars.push(" . Json::htmlEncode($options) . ");",
-    View::POS_HEAD
-);
+    TagFormVars.push(" . \yii\helpers\Json::htmlEncode($options) . ");
+    ",
+        \yii\web\View::POS_HEAD
+    );
+}
