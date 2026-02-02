@@ -12,29 +12,63 @@
 namespace open20\amos\tag\models;
 
 use open20\amos\cwh\models\CwhTagInterestMm;
+use open20\amos\tag\AmosTag;
+use open20\amos\tag\utility\TagUtility;
 use open20\amos\tag\models\search\TagQuery;
 use creocoder\nestedsets\NestedSetsBehavior;
+use Yii;
+use yii\console\Application;
+use yii\db\Expression;
+use yii\db\Query;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "tag".
+ * @property integer $only_admin
  */
-class Tag extends \open20\amos\tag\models\base\BaseTag
-{
+class Tag extends \open20\amos\tag\models\base\BaseTag {
+
     /**
-     * 
+     *
      * @return TagQuery
      */
-    public static function find()
-    {
+    public static function find() {
         return new TagQuery(get_called_class());
     }
 
     /**
-     * 
+     * @return array[]
+     */
+    public function rules() {
+        return ArrayHelper::merge(parent::rules(), [
+                    [[
+                    'only_admin'
+                        ], 'integer'],
+        ]);
+    }
+
+    /**
+     * @return string[]
+     */
+    public function attributeLabels() {
+        return ArrayHelper::merge(parent::rules(), [
+                    'only_admin' => AmosTag::t('amostag', 'Rendi modificabile solo da AMMINISTRATORE_TAG')
+        ]);
+    }
+
+    public function __toString() {
+        $string = '';
+        if (!empty($this->nome)) {
+            $string = $this->nome;
+        }
+        return $string;
+    }
+
+    /**
+     *
      * @return type
      */
-    public function behaviors()
-    {
+    public function behaviors() {
         return [
             'tree' => [
                 'class' => NestedSetsBehavior::className(),
@@ -45,68 +79,69 @@ class Tag extends \open20\amos\tag\models\base\BaseTag
     }
 
     /**
-     * 
+     *
      * @return type
      */
-    public function transactions()
-    {
+    public function transactions() {
         return [
             self::SCENARIO_DEFAULT => self::OP_ALL,
         ];
     }
 
     /**
-     * 
+     *
      * @param type $insert
      * @param type $changedAttributes
      */
-    public function afterSave($insert, $changedAttributes)
-    {
-        if (isset($_POST['Tag']) && isset($_POST['Tag']['id'])) {
-            $tagId = $this->id;
+    public function afterSave($insert, $changedAttributes) {
+        if (!(\Yii::$app instanceof Application) && \Yii::$app->user->can('AMMINISTRATORE_TAG')) {
+            if (isset($_POST['Tag']) && isset($_POST['Tag']['id'])) {
+                $tagId = $this->id;
 
-            // set of all occurence of $tagId
-            if (isset($_POST['ModelsRoles'])) {
-                // delete all occurence of $tagId
-                TagModelsAuthItemsMm::deleteAll(['tag_id' => $tagId]);
-                $modelsRoles = $_POST['ModelsRoles'];
-                foreach ($modelsRoles as $moduleName => $rolesArray) {
-                    foreach ($rolesArray as $key => $roleName) {
-                        $modelTagModels = new TagModelsAuthItemsMm();
-                        $modelTagModels->tag_id = $tagId;
-                        $modelTagModels->classname = $moduleName;
-                        $modelTagModels->auth_item = $roleName;
-                        // TODO Su database sono da aggiungere i campi
-                        // per le behaviors, e qua è togliere il detach!
-                        $modelTagModels->detachBehaviors();
-                        $modelTagModels->save(false);
-                    }
-                }
-            } else {
-                TagModelsAuthItemsMm::deleteAll(['tag_id' => $tagId]);
-            }
-            
-            $moduleCwh = \Yii::$app->getModule('cwh');
-            if (isset($moduleCwh)) {
-                if (isset($_POST['CwhTagInterestMm'])) {
+                // set of all occurence of $tagId
+                if (isset($_POST['ModelsRoles'])) {
                     // delete all occurence of $tagId
-                    CwhTagInterestMm::deleteAll(['tag_id' => $tagId]);
-                    $CwhTagInterestMm = $_POST['CwhTagInterestMm'];
-                    foreach ($CwhTagInterestMm as $moduleName => $rolesArray) {
+                    TagModelsAuthItemsMm::deleteAll(['tag_id' => $tagId]);
+                    $modelsRoles = $_POST['ModelsRoles'];
+                    foreach ($modelsRoles as $moduleName => $rolesArray) {
                         foreach ($rolesArray as $key => $roleName) {
-                            $modelTagModels = new \open20\amos\cwh\models\CwhTagInterestMm();
+                            $modelTagModels = new TagModelsAuthItemsMm();
                             $modelTagModels->tag_id = $tagId;
                             $modelTagModels->classname = $moduleName;
                             $modelTagModels->auth_item = $roleName;
+                            // TODO Su database sono da aggiungere i campi
+                            // per le behaviors, e qua è togliere il detach!
                             $modelTagModels->detachBehaviors();
                             $modelTagModels->save(false);
                         }
                     }
                 } else {
-                    CwhTagInterestMm::deleteAll(['tag_id' => $tagId]);
+                    TagModelsAuthItemsMm::deleteAll(['tag_id' => $tagId]);
+                }
+
+                $moduleCwh = \Yii::$app->getModule('cwh');
+                if (isset($moduleCwh)) {
+                    if (isset($_POST['CwhTagInterestMm'])) {
+                        // delete all occurence of $tagId
+                        CwhTagInterestMm::deleteAll(['tag_id' => $tagId]);
+                        $CwhTagInterestMm = $_POST['CwhTagInterestMm'];
+                        foreach ($CwhTagInterestMm as $moduleName => $rolesArray) {
+                            foreach ($rolesArray as $key => $roleName) {
+                                $modelTagModels = new \open20\amos\cwh\models\CwhTagInterestMm();
+                                $modelTagModels->tag_id = $tagId;
+                                $modelTagModels->classname = $moduleName;
+                                $modelTagModels->auth_item = $roleName;
+                                $modelTagModels->detachBehaviors();
+                                $modelTagModels->save(false);
+                            }
+                        }
+                    } else {
+                        CwhTagInterestMm::deleteAll(['tag_id' => $tagId]);
+                    }
                 }
             }
         }
+
 
         parent::afterSave($insert, $changedAttributes);
     }
@@ -114,8 +149,7 @@ class Tag extends \open20\amos\tag\models\base\BaseTag
     /**
      * @return array - the list of distinct classname of the models
      */
-    public function getClassname()
-    {
+    public function getClassname() {
         $ret = [];
         $listaElementi = TagModelsAuthItemsMm::findAll(['tag_id' => $this->id]);
         foreach ($listaElementi as $elemento) {
@@ -129,8 +163,7 @@ class Tag extends \open20\amos\tag\models\base\BaseTag
      *
      * @return array
      */
-    public function getRoles()
-    {
+    public function getRoles() {
         $ret = [];
         $listaElementi = TagModelsAuthItemsMm::findAll(['tag_id' => $this->id]);
         foreach ($listaElementi as $elemento) {
@@ -141,11 +174,10 @@ class Tag extends \open20\amos\tag\models\base\BaseTag
     }
 
     /**
-     * 
+     *
      * @return type
      */
-    public function getModelsRoles()
-    {
+    public function getModelsRoles() {
         $ret = [];
         $listaElementi = TagModelsAuthItemsMm::findAll(['tag_id' => $this->id]);
         foreach ($listaElementi as $elemento) {
@@ -156,21 +188,18 @@ class Tag extends \open20\amos\tag\models\base\BaseTag
     }
 
     /**
-     * 
+     *
      * @param type $id
      * @param type $classname
      * @param type $role
      * @return boolean
      */
-    public function isModelRole($id, $classname, $role)
-    {
+    public function isModelRole($id, $classname, $role) {
         $listaElementi = TagModelsAuthItemsMm::findAll(['tag_id' => $this->id]);
         foreach ($listaElementi as $elemento) {
             $valori = $elemento->getAttributes();
             if (
-                $valori['tag_id'] == $id
-                && $valori['classname'] == $classname
-                && $valori['auth_item'] == $role
+                    $valori['tag_id'] == $id && $valori['classname'] == $classname && $valori['auth_item'] == $role
             ) {
                 return true;
             }
@@ -180,15 +209,14 @@ class Tag extends \open20\amos\tag\models\base\BaseTag
     }
 
     /**
-     * 
+     *
      * @param type $classname
      * @return type
      */
-    public function getAssignedRolesByClassname($classname)
-    {
+    public function getAssignedRolesByClassname($classname) {
         $ret = [];
         $listaElementi = TagModelsAuthItemsMm::findAll([
-            'tag_id' => $this->id, 'classname' => $classname
+                    'tag_id' => $this->id, 'classname' => $classname
         ]);
         foreach ($listaElementi as $elemento) {
             $ret[] = $elemento->auth_item;
@@ -198,18 +226,17 @@ class Tag extends \open20\amos\tag\models\base\BaseTag
     }
 
     /**
-     * 
+     *
      * @param type $classname
      * @return type
      */
-    public function getAssignedInterestByClassname($classname)
-    {
+    public function getAssignedInterestByClassname($classname) {
         $ret = [];
         $moduleCwh = \Yii::$app->getModule('cwh');
         if (isset($moduleCwh)) {
             $listaElementi = CwhTagInterestMm::findAll([
-                'tag_id' => $this->id,
-                'classname' => $classname
+                        'tag_id' => $this->id,
+                        'classname' => $classname
             ]);
             foreach ($listaElementi as $elemento) {
                 $ret[] = $elemento->auth_item;
@@ -222,14 +249,13 @@ class Tag extends \open20\amos\tag\models\base\BaseTag
     /**
      * @return string
      */
-    public function getPath()
-    {
+    public function getPath($escludiPadre = true) {
         $pathParents = $this->parents()->orderBy('lvl ASC')->all();
 
         $parentsPath = [];
         foreach ($pathParents as $padre) {
-            //esclude la root in quanto è già indicata
-            if ($padre->lvl != 0) {
+            // Aggiunge il nome del padre solo se il livello non è 0
+            if ($padre->lvl != 0 || !$escludiPadre) {
                 $parentsPath[] = $padre->nome;
             }
         }
@@ -241,8 +267,7 @@ class Tag extends \open20\amos\tag\models\base\BaseTag
     /**
      * @return mixed
      */
-    public function getTagRoot()
-    {
+    public function getTagRoot() {
         $root = Tag::find()->andWhere(['id' => $this->root])->one();
 
         return $root;
@@ -253,33 +278,98 @@ class Tag extends \open20\amos\tag\models\base\BaseTag
      *
      * @return string
      */
-    public function getRootName(){
-		$root = $this->getTagRoot();
-		return $root->nome;
-	}
-	
-	/**
-     * get Name for Father and Son tag 
+    public function getRootName() {
+        $root = $this->getTagRoot();
+        return $root->nome;
+    }
+
+    /**
+     * get Name for Father and Son tag
      *
      * @return string
      */
-	public function getFather(){		
-		$lvl = $this->lvl - 1;
-		$father = null;
-		if($lvl > 0){
-			$father = Tag::find()
-			->andWhere(['<','lft', $this->lft])
-			->andWhere(['>', 'rgt', $this->rgt])
-			->andWhere(['lvl' => $lvl])
-			->andWhere(['root' => $this->root])
-			->andWhere(['<>', 'root', $this->id])
-			->andWhere(['>', 'lvl', 0])
-			->one();			
-		}
-		if(!empty($father)){
-			return $father->nome . ' - ' . $this->nome;
-		}
-		return $this->nome;
-	}
+    public function getFather() {
+        $lvl = $this->lvl - 1;
+        $father = null;
+        if ($lvl > 0) {
+            $father = Tag::find()
+                    ->andWhere(['<', 'lft', $this->lft])
+                    ->andWhere(['>', 'rgt', $this->rgt])
+                    ->andWhere(['lvl' => $lvl])
+                    ->andWhere(['root' => $this->root])
+                    ->andWhere(['<>', 'root', $this->id])
+                    ->andWhere(['>', 'lvl', 0])
+                    ->one();
+        }
+        if (!empty($father)) {
+            return $father->nome . ' - ' . $this->nome;
+        }
+        return $this->nome;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOnlyAdmin() {
+        if (!Yii::$app->user->can('AMMINISTRATORE_TAG') && $this->only_admin) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param $namespace
+     * @return array
+     */
+    public static function getOccurrencyTags($root_ids = [], $namespace = null,$tag_ids = []) {
+
+        $query = new Query();
+        $query->from('entitys_tags_mm')
+                ->select(new Expression('tag.id, tag.nome, COUNT(*) as occurrency'))
+                ->innerJoin('tag', 'tag.id = entitys_tags_mm.tag_id')
+                ->andWhere(['entitys_tags_mm.deleted_at' => null])
+                ->groupBy('tag.id');
+        if ($namespace) {
+            $query->andWhere(['entitys_tags_mm.classname' => $namespace]);
+        }
+        if (!empty($root_ids)) {
+            $query->andWhere(['tag.root' => $root_ids]);
+        }
+        if (!empty($tag_ids)) {
+            $query->andWhere(['tag.id' => $tag_ids]);
+        }
+        $occurrencies = $query->all();
+        return $occurrencies;
+    }
+    
+    
+    /**
+     * funzione che, dato un tag model calcola tutte le occorrenze sue e dei suoi figli(se ne ha)
+     * @param Tag $model dei tag da disabilitare o abilitare
+     * @return int $totalOccurency
+     */
+
+    public static function totalOccurency($model) {
+        $children = TagUtility::getChildrensForTag($model);
+        $occurrencyTags = self::getOccurrencyTags([$model->root], null, [$model->id]);
+        foreach ($occurrencyTags as $ocTags) {
+            $totalOccurency += $ocTags['occurrency'];
+        }
+        if (count($children) > 0) {
+            foreach ($children as $child) {
+                $children = TagUtility::getChildrensForTag($child);
+                if (count($children) > 0) {
+                    self::totalOccurency($child);
+                }
+                $occurrencyTags = self::getOccurrencyTags([$child->root], null, [$child->id]);
+                if (!empty($occurrencyTags)) {
+                    foreach ($occurrencyTags as $ocTags) {
+                        $totalOccurency += $ocTags['occurrency'];
+                    }
+                }
+            }
+        }
+        return $totalOccurency;
+    }
 
 }

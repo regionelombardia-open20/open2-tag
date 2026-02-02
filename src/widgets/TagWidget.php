@@ -94,6 +94,24 @@ class TagWidget extends InputWidget
         $this->view->registerJsVar("optionsTrees_$uniqueId", \yii\helpers\Json::htmlEncode($this->treeOptions));
         $this->view->registerJsVar("previousPost_$uniqueId", serialize(\Yii::$app->request->get()));
         $js = <<<JS
+        function onlyLeavesSelectablev2(selectSonsOnly, id){
+            // only leaf nodes are selectablec
+            var idTree = 'tree_'+id;
+            var parents = $('#'+idTree+' li.kv-parent');
+            parents.each(function(index, node){
+                if(selectSonsOnly == true){
+                    $('.kv-node-checkbox:first', this).remove();
+                }
+                //The folder node - remove checkbox
+                var detail =  $('.kv-node-detail:first',this);
+                detail.addClass('kv-node-detail-parent').removeClass('kv-node-detail');
+                // on click open/close folder instead of select the folder and nodes inside it
+                detail.on('click', function (e) {
+                    e.preventDefault();
+                    $(this).parent().find('.kv-node-toggle:first').click();
+                });
+            });
+        }
         var errorBlockMessage = "$errorBlockMessage";
         var errorTooltipTitle = "$errorTooltipTitle";
         $.ajax(
@@ -134,7 +152,7 @@ class TagWidget extends InputWidget
                     var options = JSON.parse(optionsTrees_$uniqueId);
                         options.forEach(function (TagFormVar, indexTree) {
                             renderPreview(TagFormVar.data_trees.tags_selected, TagFormVar.data_trees.id, TagFormVar.data_trees.limit);
-                            onlyLeavesSelectable(TagFormVar.selectSonsOnly);
+                            onlyLeavesSelectablev2(TagFormVar.selectSonsOnly, TagFormVar.data_trees.id);
                         });
                 }
 

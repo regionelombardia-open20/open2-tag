@@ -11,7 +11,7 @@
     },
     "require": {
         "php": ">=5.4.0",
-        "open20/amos-core":"~1.9",
+        "open20/amos-core":"^1.48.0",
         "open20/amos-admin":">=1.8",
         "open20/amos-dashboard":"~1.5",
         "open20/amos-layout":"^1.11.1",

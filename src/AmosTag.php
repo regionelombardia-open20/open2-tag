@@ -67,6 +67,14 @@ class AmosTag extends AmosModule implements CmsModuleInterface, SearchModuleInte
      */
     public $modelsTagFree = [];
 
+    public $enableTagLight = false;
+
+    /**
+     * E.g.: ['open20\amos\news\models\News', '...']
+     * @var string[] $tagContentsModelsEnabled Array containing the models for which to show contents in TagContentsController view
+     */
+    public $tagContentsModelsEnabled = [];
+
     /**
      * @inheritdoc
      */

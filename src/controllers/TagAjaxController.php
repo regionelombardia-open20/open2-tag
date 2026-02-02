@@ -22,7 +22,8 @@ class TagAjaxController extends BackendController
                     [
                         'allow' => true,
                         'actions' => [
-                            'tag-widget'
+                            'tag-widget',
+                            'tag-widget-light',
                         ],
                     ]
                 ]
@@ -80,6 +81,52 @@ class TagAjaxController extends BackendController
         // die;
 
         return $this->renderAjax('tag-widget', ['widgetParams' => $widgetParams]);
+    }
+
+    public function actionTagWidgetLight()
+    {
+        $get = \Yii::$app->request->get();
+        $widgetParams = [];
+        $classname = $get['classname'];
+        $attribute = $get['attribute'];
+        $record_id = $get['record_id'];
+        $previousPost = unserialize($get['previousPost']);
+        $widgetParams['attribute'] = $get['attribute'];
+        $widgetParams['singleFixedTreeId'] = $get['singleFixedTreeId'];
+
+//        $widgetParams['id'] = $get['id'];
+        $widgetParams['containerClass'] = $get['containerClass'];
+        $widgetParams['name'] = $get['name'];
+        $widgetParams['isSearch'] = $this->filterBoolean($get['isSearch']);
+        $widgetParams['hideHeader'] = $this->filterBoolean($get['hideHeader']);
+        $widgetParams['selectSonsOnly'] = $this->filterBoolean($get['selectSonsOnly']);
+//        $widgetParams['isFrontend'] = $get['isFrontend'];
+
+        $widgetParams['moduleCwh'] = \Yii::$app->getModule('cwh');
+        $widgetParams['form'] = new ActiveForm();
+        $widgetParams['responseAjax'] = true;
+        $widgetParams['enableAjax'] = true;
+
+
+        if (!empty($classname)) {
+            if (!empty($record_id)) {
+                $model = $classname::findOne($record_id);
+                $model->load($previousPost);
+                $widgetParams['model'] = $model;
+            } else {
+                $model = new $classname();
+                $model->load($previousPost);
+                $widgetParams['model'] = $model;
+            }
+            if (!empty($previousPost) && !empty($get['isSearch'])) {
+                $widgetParams['form_values'] = isset($previousPost[$model->formName()][$attribute]) ? $previousPost[$model->formName()][$attribute] : [];
+            }
+
+
+        }
+        // die;
+
+        return $this->renderAjax('tag-widget-light', ['widgetParams' => $widgetParams]);
     }
 
     /**

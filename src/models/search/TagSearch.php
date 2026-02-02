@@ -93,9 +93,16 @@ class TagSearch extends Tag implements CmsModelInterface
      * @param array $params
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params,$applyAdminFilter = null,$lvl = null)
     {
         $query = Tag::find();
+        
+        if ($applyAdminFilter) {
+            $query->andWhere(['only_admin' => 0]);
+        }
+        if ($lvl == 0) {
+            $query->andWhere(['lvl' => $lvl]);
+        }
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

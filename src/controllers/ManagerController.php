@@ -45,9 +45,10 @@ class ManagerController extends Controller {
                                     [
                                         'allow' => true,
                                         'actions' => [
-                                            'index'
+                                            'index',
+                                            'is-root-only-admin',
                                         ],
-                                        'roles' => ['AMMINISTRATORE_TAG']
+                                        'roles' => ['TAG_EDITOR']
                                     ],
                                     [
                                         'allow' => true,
@@ -114,6 +115,27 @@ class ManagerController extends Controller {
         }
 
         return $out;
+    }
+
+    /**
+     * @return bool
+     */
+    public function actionIsRootOnlyAdmin() {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $post = \Yii::$app->request->post();
+        $tagId = $post['tagId'];
+        if ($tagId && !\Yii::$app->user->can('AMMINISTRATORE_TAG')) {
+            $tag = \open20\amos\tag\models\Tag::findOne($tagId);
+            if (!empty($tag)) {
+                $rootId = $tag->root;
+                $tagRoot = \open20\amos\tag\models\Tag::findOne($rootId);
+                if ($tagRoot) {
+                    return $tagRoot->only_admin;
+                }
+            }
+        }
+        return false;
     }
 
 }

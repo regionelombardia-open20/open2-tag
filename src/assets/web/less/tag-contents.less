@@ -1,0 +1,43 @@
+@import (optional) "../../vendor/open20/amos-core/views/assets/web/css/less/variables.less";
+/**
+IMPORT AMOS-LAYOUT VARIABLES
+ */
+@import (optional) "../../vendor/open20/amos-layout/src/assets/resources/base/less/variables.less";
+
+/**
+IMPORT STYLE-CUSTOM
+ */
+/* @import (optional) "../../backend/web/less/style_custom.less"; */
+[class^="tag-contents-"] {
+    .bi-plugin-header {
+        margin-bottom: 18px;
+
+        .h3 {
+            span {
+                font-weight: normal;
+            }
+        }
+    }
+}
+.custom-page-header {
+    .h2 {
+        span {
+            font-weight: normal;
+            text-transform: none;
+        }
+    }
+}
+
+.background-active {
+    padding: 60px 0 40px 0;
+    margin-bottom: 40px;
+
+}
+
+.tag-contents-events.background-active {
+    background-color: #E6E9F2;
+}
+
+.tag-contents-documents.background-active {
+    background-color: #ECF3EC;
+}

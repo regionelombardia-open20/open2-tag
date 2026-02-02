@@ -23,11 +23,32 @@ class m200122_094415_create_root_nework extends Migration
      */
     public function safeUp()
     {
-        $roleRootTag1 = new \open20\amos\tag\models\Tag();
-        $roleRootTag1->nome = "Network";
-        $roleRootTag1->codice = 'root_networks';
-        $roleRootTag1->makeRoot();
-        $roleRootTag1->save(false);
+        $this->insert('tag', [
+            'lft' => 1,
+            'rgt' => 2,
+            'lvl' => 0,
+            'nome' =>'Network',
+            'codice' => 'root_networks',
+            'icon_type' => 1,
+            'icon' => '',
+            'active' => 1,
+            'selected' => 0,
+            'disabled' => 0,
+            'readonly' => 0,
+            'visible' => 1,
+            'collapsed' => 0,
+            'movable_u' => 1,
+            'movable_d' => 1,
+            'movable_l' => 1,
+            'movable_r' => 1,
+            'removable' => 1,
+            'removable_all' => 0,
+            'child_allowed' => 1,
+
+        ]);
+
+        $this->execute("UPDATE tag SET root = tag.id WHERE tag.codice= 'root_networks'");
+
     }
 
     /**

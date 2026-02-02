@@ -18,6 +18,8 @@ use open20\amos\core\utilities\CoreCommonUtility;
 use open20\amos\tag\AmosTag;
 use open20\amos\tag\models\EntitysTagsMm;
 use open20\amos\tag\models\Tag;
+use kartik\tree\TreeView;
+use Yii;
 use yii\base\BaseObject;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveQuery;
@@ -171,7 +173,7 @@ class TagUtility extends BaseObject
     public static function findTagsByRootId($rootId, $onlyIds = false)
     {
         $childrenIds = [];
-        $tagRoot = Tag::findOne(['root' => $rootId]);
+        $tagRoot = Tag::findOne(['id' => $rootId]);
         if (!is_null($tagRoot)) {
             $children = $tagRoot->children()->all();
             if (!$onlyIds) {
@@ -315,6 +317,105 @@ class TagUtility extends BaseObject
         }
 
         return true;
+    }
+
+    /**
+     * @param $isAdmin
+     * @return array
+     */
+    public static function toolbarTreeViewWidget($isAdmin)
+    {
+        if ($isAdmin) {
+            return [
+                TreeView::BTN_REMOVE => [
+                    'icon' => 'trash',
+                    'alwaysDisabled' => false,
+                    'options' => ['title' => Yii::t('kvtree', 'Delete'), 'disabled' => true]
+                ],
+                TreeView::BTN_CREATE_ROOT => [
+                    'icon' => 'tree-conifer',
+                    'alwaysDisabled' => false,
+                    'options' => ['title' => Yii::t('kvtree', 'Add new root')]
+                ],
+                TreeView::BTN_SEPARATOR,
+                TreeView::BTN_MOVE_UP => [
+                    'icon' => 'arrow-up',
+                    'alwaysDisabled' => false,
+                    'options' => ['title' => Yii::t('kvtree', 'Move Up'), 'disabled' => true]
+                ],
+                TreeView::BTN_MOVE_DOWN => [
+                    'icon' => 'arrow-down',
+                    'alwaysDisabled' => false,
+                    'options' => ['title' => Yii::t('kvtree', 'Move Down'), 'disabled' => true]
+                ],
+                TreeView::BTN_MOVE_LEFT => [
+                    'icon' => 'arrow-left',
+                    'alwaysDisabled' => false,
+                    'options' => ['title' => Yii::t('kvtree', 'Move Left'), 'disabled' => true]
+                ],
+                TreeView::BTN_MOVE_RIGHT => [
+                    'icon' => 'arrow-right',
+                    'alwaysDisabled' => false,
+                    'options' => ['title' => Yii::t('kvtree', 'Move Right'), 'disabled' => true]
+                ],
+                TreeView::BTN_SEPARATOR,
+                TreeView::BTN_REFRESH => [
+                    'icon' => 'refresh',
+                    'alwaysDisabled' => false,
+                    'options' => ['title' => Yii::t('kvtree', 'Refresh')],
+                    'url' => Yii::$app->request->url
+                ],
+            ];
+        } else {
+            return [
+                TreeView::BTN_REMOVE => false,
+                TreeView::BTN_CREATE_ROOT => false,
+                TreeView::BTN_SEPARATOR,
+                TreeView::BTN_MOVE_UP => false,
+                TreeView::BTN_MOVE_DOWN => false,
+                TreeView::BTN_MOVE_LEFT => false,
+                TreeView::BTN_MOVE_RIGHT => false,
+                TreeView::BTN_SEPARATOR,
+                TreeView::BTN_REFRESH => false
+            ];
+        }
+    }
+    
+    public static function getRecordsForTag($id){
+        $tagCount = EntitysTagsMm::find()->andWhere(['tag_id' => $id])->count();
+        return $tagCount > 0 ? $tagCount : '' ;
+    }
+    
+    public static function getChildrensForTag($model){
+        $lvl = $model->lvl +1;
+        $children = Tag::find()->andWhere(['root' => $model->root])
+            ->andWhere(['lvl' => $lvl])
+            ->andWhere(['>','lft',$model->lft])
+            ->andWhere(['<','rgt',$model->rgt])
+            ->andWhere(['only_admin' => 0])
+            ->orderBy('lft')
+            ->all();
+        
+        return $children;
+    }
+    
+    public static function getFoldersTagList($model){
+        
+        $folderList = [];
+        $modelList = Tag::find()->andWhere(['root' => $model->root])
+                ->andWhere(['<=','lft',$model->lft])
+            ->andWhere(['>=','rgt',$model->rgt])
+                ->orderBy('lvl')
+            ->all();
+        foreach ($modelList as $model){
+            $folderList[] = [
+                'id' => $model->id,
+                'nome' => $model->nome,
+            ];
+        }
+        
+        return $folderList;
+        
     }
 
 }
