@@ -1,5 +1,6 @@
 {
     "name": "open20/amos-tag",
+    "license": "GPL-3.0-or-later",
     "description": "Sistema AMOS per le TAG",
     "keywords": ["amos", "yii2", "tag"],
     "homepage": "http://www.example.com/",
